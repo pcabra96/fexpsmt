@@ -1,5 +1,22 @@
-# Function from stats with very small modification
-farma.spectrum <- function (ar = 0, ma = 0, d = 0, var.noise = 1, n.freq = 500, frequency=c(0,2*pi)){
+#' Theoretical Spectral density of a FARIMA(p,d,q) process.
+#'
+#' It is based on an existing function from stats but modified to include long memory.
+#'
+#' @param ar The coefficients of the autoregressive part of the process
+#' @param ma The coefficients of the moving average part of the process
+#' @param d # The long memory component, that should be between 0 and 0.5
+#' @param var.noise # The variance of the process
+#' @param n.freq # Length of the simulation
+#' @param frequency # An interval of the domain in which the theoretical spectral density is evaluated
+#'
+#' @return Theoretical spectral density of a FARIMA process
+#' @export
+#'
+#' @examples farima.spectrum(ar = 0.5)
+#' @examples farima.spectrum(ar = c(0.5,-0.3), n.freq = 1024)
+#' @examples farima.spectrum(ar = 0.5, ma = -0.2, d = 0.3, n.freq = 8192)
+
+farima.spectrum <- function (ar = 0, ma = 0, d = 0, var.noise = 1, n.freq = 512, frequency=c(0,2*pi)){
   frequency = frequency
   ar.poly <- c(1, -ar)
   z.ar <- base::polyroot(ar.poly)

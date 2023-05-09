@@ -11,7 +11,7 @@
 #' @examples fit.farima(y, max.p = 1)
 #' @examples fit.farima(y, max.p = 1, max.q = 1, max.d = 1)
 
-fit.farima <- function(y, max.p = 0, max.q = 0, max.d = 0){
+fit.farima <- function(y, p = 0, q = 0, d = 0){
 
   n = length(y)
   # Fundamental frequencies
@@ -23,9 +23,9 @@ fit.farima <- function(y, max.p = 0, max.q = 0, max.d = 0){
   yper = per[2: ((n+1) %/% 2)]
 
   # Optimization parameters
-  p = max.p
-  q = max.q
-  d_long = max.d
+  p = p
+  q = q
+  d_long = d
   x = w
   start_vals = c(rep(0, p+q),0)
 

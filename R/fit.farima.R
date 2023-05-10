@@ -1,8 +1,8 @@
 #' Fit the FARIMA(p,d,q) parameters using Whittle estimation
 #'
 #' @param y Time Series
-#' @param max.p integer representing the order of the autoregressive component of the process
-#' @param max.q integer representing the order of the moving average component of the process
+#' @param max.p Integer representing the order of the autoregressive component of the process
+#' @param max.q Integer representing the order of the moving average component of the process
 #' @param max.d 1 if the process has long memory and 0 if it does not
 #'
 #' @return a list containing the estimated parameters of a FARIMA(p,d,q) process
@@ -32,7 +32,7 @@ fit.farima <- function(y, p = 0, q = 0, d = 0){
   obj.Whittle = function(theta, p = 0, q = 0, d_long=0, x){
 
     I_w = yper
-    f_w = spectral.density.arima(theta, p = p, q = q, d_long = d_long, x = x)
+    f_w = spectral.density.farima(theta, p = p, q = q, d_long = d_long, x = x)
 
     SPO = I_w/f_w
 

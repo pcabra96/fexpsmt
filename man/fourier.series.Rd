@@ -2,13 +2,22 @@
 % Please edit documentation in R/fourier.series.R
 \name{fourier.series}
 \alias{fourier.series}
-\title{Title}
+\title{Truncated Fourier Series}
 \usage{
 fourier.series(f_t, k = 1)
 }
 \arguments{
-\item{k}{}
+\item{f_t}{The periodic function to be expressed as a truncated fourier series}
+
+\item{k}{Order of trucncation}
+}
+\value{
+List containing the truncated fourier series and the fourier coefficients
 }
 \description{
-Title
+Truncated Fourier Series representation for an even periodic function. It does not give appropriate results for odd functions or non-odd and non-even functions.
+}
+\examples{
+fourier.series(y_simulated, k = 2)
+fourier.series(y_simulated, k = 1)
 }

@@ -7,8 +7,19 @@
 fit.fexp(y, p = 0, d = 0)
 }
 \arguments{
-\item{d}{}
+\item{y}{Time Series}
+
+\item{p}{Integer representing the order of the exp component of the process}
+
+\item{d}{1 if the process has long memory and 0 if it does not}
+}
+\value{
+a list containing the estimated parameters of a FEXP(p,d) process
 }
 \description{
 Fit the FEXP(p,d) parameters using Whittle estimation
+}
+\examples{
+fit.fexp(y, max.p = 1)
+fit.fexp(y, max.p = 1, max.d = 1)
 }

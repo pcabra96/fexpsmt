@@ -2,7 +2,7 @@
 % Please edit documentation in R/fexp.spectrum.R
 \name{fexp.spectrum}
 \alias{fexp.spectrum}
-\title{Title}
+\title{FEXP(p,d) theoretical spectral density}
 \usage{
 fexp.spectrum(
   ck = 0,
@@ -13,8 +13,23 @@ fexp.spectrum(
 )
 }
 \arguments{
-\item{frequency}{}
+\item{ck}{The p coefficients corresponding to the exp component of the model. ATTENTION: this ck is 2 times the coefficient proposed by Bloomfield in his original paper.}
+
+\item{d}{The long memory component, that should be between 0 and 0.5}
+
+\item{var.noise}{Variance of the process}
+
+\item{n.freq}{Length of the simulation}
+
+\item{frequency}{# An interval of the domain in which the theoretical spectral density is evaluated}
+}
+\value{
+Theoretical spectral density of a FEXP process
 }
 \description{
-Title
+FEXP(p,d) theoretical spectral density
+}
+\examples{
+fexp.spectrum(ck = 1)
+fexp.spectrum(ck = c(2,1), n.freq = 2048)
 }

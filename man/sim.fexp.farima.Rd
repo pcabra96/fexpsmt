@@ -7,8 +7,24 @@
 sim.fexp.farima(ar = 0, ma = 0, d = 0, T = 512, K = 2)
 }
 \arguments{
-\item{K}{}
+\item{ar}{the autoregressive coefficients}
+
+\item{ma}{the moving average coefficients}
+
+\item{d}{the long memorry parameter}
+
+\item{T}{the length of the time series to be simulated}
+
+\item{K}{the order of the FEXP model}
+}
+\value{
+a time series of lenth T
 }
 \description{
 Simulate the coresponding FEXP(p,d) process of a FARIMA(p,d,q) process
+}
+\examples{
+function(ar = 0.5, T = 1024, K = 1)
+function(ma = -0.5, T = 2048, K = 3)
+function(ar = 0.1, ma = -0.5, d = 0.2 T = 2048, K = 5)
 }

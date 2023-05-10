@@ -9,9 +9,9 @@ fit.farima(y, p = 0, q = 0, d = 0)
 \arguments{
 \item{y}{Time Series}
 
-\item{max.p}{integer representing the order of the autoregressive component of the process}
+\item{max.p}{Integer representing the order of the autoregressive component of the process}
 
-\item{max.q}{integer representing the order of the moving average component of the process}
+\item{max.q}{Integer representing the order of the moving average component of the process}
 
 \item{max.d}{1 if the process has long memory and 0 if it does not}
 }

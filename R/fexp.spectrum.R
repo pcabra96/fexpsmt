@@ -1,15 +1,17 @@
-#' Title
+#' @title FEXP(p,d) theoretical spectral density
+#' @description
 #'
-#' @param ck
-#' @param d
-#' @param var.noise
-#' @param n.freq
-#' @param frequency
+#' @param ck The p coefficients corresponding to the exp component of the model. ATTENTION: this ck is 2 times the coefficient proposed by Bloomfield in his original paper.
+#' @param d The long memory component, that should be between 0 and 0.5
+#' @param var.noise Variance of the process
+#' @param n.freq Length of the simulation
+#' @param frequency # An interval of the domain in which the theoretical spectral density is evaluated
 #'
-#' @return
+#' @return Theoretical spectral density of a FEXP process
 #' @export
 #'
-#' @examples
+#' @examples fexp.spectrum(ck = 1)
+#' @examples fexp.spectrum(ck = c(2,1), n.freq = 2048)
 
 fexp.spectrum <- function (ck = 0, d = 0, var.noise = 1, n.freq = 512, frequency=c(0,2*pi)){
 

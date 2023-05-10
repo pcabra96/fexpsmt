@@ -1,12 +1,14 @@
-#' Title
+#' @title Truncated Fourier Series
+#' @description Truncated Fourier Series representation for an even periodic function. It does not give appropriate results for odd functions or non-odd and non-even functions.
 #'
-#' @param f_t
-#' @param k
+#' @param f_t The periodic function to be expressed as a truncated fourier series
+#' @param k Order of trucncation
 #'
-#' @return
+#' @return List containing the truncated fourier series and the fourier coefficients
 #' @export
 #'
-#' @examples
+#' @examples fourier.series(y_simulated, k = 2)
+#' @examples fourier.series(y_simulated, k = 1)
 fourier.series <- function (f_t, k = 1){
 
   # Series in which we check the results

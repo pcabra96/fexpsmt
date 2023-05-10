@@ -1,14 +1,18 @@
 #' Simulate the coresponding FEXP(p,d) process of a FARIMA(p,d,q) process
 #'
-#' @param ar
-#' @param ma
-#' @param d
-#' @param K
+#' @param ar the autoregressive coefficients
+#' @param ma the moving average coefficients
+#' @param d the long memorry parameter
+#' @param T the length of the time series to be simulated
+#' @param K the order of the FEXP model
 #'
-#' @return
+#' @return a time series of lenth T
 #' @export
 #'
-#' @examples
+#' @examples function(ar = 0.5, T = 1024, K = 1)
+#' @examples function(ma = -0.5, T = 2048, K = 3)
+#' @examples function(ar = 0.1, ma = -0.5, d = 0.2 T = 2048, K = 5)
+
 sim.fexp.farima <- function(ar = 0, ma = 0, d = 0, T = 512, K = 2){
 
   # Assign values to parameters

@@ -1,23 +1,35 @@
-spectral.density <- function(eta = c(), p = 0, q = 0, d_long=0, x){
-  
+#' Title
+#'
+#' @param eta
+#' @param p
+#' @param q
+#' @param d_long
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+spectral.density.arima <- function(eta = c(), p = 0, q = 0, d_long=0, x){
+
   if(p > 0) {
     phi <- eta[1:(p)]
     px <- outer(x, 1:p)
     Rar <- cos(px) %*% phi
     Iar <- sin(px) %*% phi
-    
+
     far <- (1-Rar)^2 + Iar^2
   } else {
     phi <- numeric(0)
     far <- 1
   }
-  
+
   if(q > 0) {
     psi <- eta[(p+1):(p+q)]
     px <- outer(x, 1:q)
     Rma <- cos(px) %*% psi
     Ima <- sin(px) %*% psi
-    
+
     fma <- (1+Rma)^2 + Ima^2
   } else {
     psi <- numeric(0)
@@ -31,10 +43,10 @@ spectral.density <- function(eta = c(), p = 0, q = 0, d_long=0, x){
     psi = 0
     lm <- 1
   }
-  
+
   spec <- lm*(fma/far)
-  
+
   spectrum = (1/(2*pi))*spec
-  
+
   return(spectrum)
 }

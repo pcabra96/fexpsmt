@@ -32,7 +32,7 @@ fit.farima <- function(y, p = 0, q = 0, d = 0){
   obj.Whittle = function(theta, p = 0, q = 0, d_long=0, x){
 
     I_w = yper
-    f_w = spectral.density(theta, p = p, q = q, d_long = d_long, x = x)
+    f_w = spectral.density.arima(theta, p = p, q = q, d_long = d_long, x = x)
 
     SPO = I_w/f_w
 

@@ -4,7 +4,7 @@
 \alias{fit.farima}
 \title{Fit the FARIMA(p,d,q) parameters using Whittle estimation}
 \usage{
-fit.farima(y, max.p = 0, max.q = 0, max.d = 0)
+fit.farima(y, p = 0, q = 0, d = 0)
 }
 \arguments{
 \item{y}{Time Series}

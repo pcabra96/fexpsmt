@@ -1,3 +1,3 @@
 # fexpsmt
-This will be an R package to simulate FARIMA and FEXP processes from their spectral density. It is part of the master thesis of the University of Geneva. The project is under the supervision of professor Davide La Vecchia and the collaboration with PhD student Manon Felix.
+We are currently developing an R package that allows for the simulation of FARIMA and FEXP processes using their spectral density. This package is part of my Master's thesis project at the University of Geneva and is being supervised by Professor Davide La Vecchia, with collaboration from PhD student Manon Felix.
 

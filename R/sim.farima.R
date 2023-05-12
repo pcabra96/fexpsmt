@@ -52,7 +52,7 @@ sim.farima <- function(ar = 0, ma = 0, d = 0, T = 512){
   Vs[2+M-t_1] = Conj(Vs[t_1])
 
   # Inverse fast fourier transform
-  y_fft = Re(fft(Vs, inverse = T))[1:(M/2)]/sqrt(M)
+  y_fft = sqrt(2*pi/M)*Re(fft(Vs, inverse = T))[1:(M/2)]
 
   return(y_fft)
 }

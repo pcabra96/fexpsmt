@@ -43,6 +43,7 @@ sim.fexp <- function(ck, d = 0, T = 512){
   Vs[2+M-t_1] = Conj(Vs[t_1])
 
   # Inverse fast fourier transform
-  y_fft = Re(fft(Vs, inverse = T))[1:(M/2)]/sqrt(M)
-  return(y_fft)
+  y_fft = sqrt(pi/T)*Re(fft(Vs, inverse = T))[1:(M/2)]
+
+    return(y_fft)
 }

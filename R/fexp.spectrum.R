@@ -31,7 +31,7 @@ fexp.spectrum <- function (ck = 0, d = 0, var.noise = 1, n.freq = 512, frequency
 
   if(d>0){
     d = d
-    lm = sapply(x, function(y) abs(2*sin(y*(1/2)))^(-2*d))
+    lm = sapply(freq, function(y) abs(2*sin(y*(1/2)))^(-2*d))
   }
   else{
     psi = 0

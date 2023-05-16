@@ -1,4 +1,5 @@
 # SIMULATION PARAMETERS
+set.seed(0)
 NUM_SIM = 1000
 POWER = 7:14
 fitted_results = matrix(0,nrow = NUM_SIM, ncol = length(POWER))

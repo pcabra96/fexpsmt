@@ -35,6 +35,7 @@ for (j in 1:length(POWER)) {
   T = 2^(POWER[j])
   true_spectrum = farima.spectrum(ar = ar_coef, n.freq = T)
   for (sim in 1:N_SIMULATIONS) {
+
     # AR OWN simulations
     y_own = sim.farima(ar = ar_coef, T = T)
 
@@ -84,23 +85,23 @@ for (j in 1:length(POWER)) {
 
 # Fitted AR coefficient
 par(mfrow=c(1,2))
-boxplot(fit_own_coef, main = "Fitted AR(1) own simulation", names = names)
+boxplot(fit_own_coef, main = "Fitted AR(1) own simulation", names = names, xlab = "T", ylab="phi_1_hat")
 abline(h=ar_coef, col = "red")
-boxplot(fit_own_coef, main = "Fitted AR(1) R simulation", names = names)
+boxplot(fit_own_coef, main = "Fitted AR(1) R simulation", names = names, xlab = "T", ylab="phi_1_hat")
 abline(h=ar_coef, col = "red")
 
 # Fitted AR periodogram
 par(mfrow=c(1,2))
-boxplot(fit_own_exp, main = "Fitted EXP(1) own simulation", names = names)
+boxplot(fit_own_exp, main = "Fitted EXP(1) own simulation", names = names, xlab = "T", ylab = "lamda_hat")
 abline(h=1, col = "red")
-boxplot(fit_r_exp, main = "Fitted EXP(1) R simulation", names = names)
+boxplot(fit_r_exp, main = "Fitted EXP(1) R simulation", names = names, xlab = "T", ylab = "lamda_hat")
 abline(h=1, col = "red")
 
 # P value
 par(mfrow=c(1,2))
-plot(p_val_own_exp, main = "p.value own simulation")
+boxplot(p_val_own_exp, main = "goodness of fit EXP(1)",ylab = "p.value own simulation", names = names)
 abline(h=0.05, col = "red")
-plot(p_val_r_exp, main = "p.value R simulation")
+boxplot(p_val_r_exp, main = "goodness of fit EXP(1)", ylab = "p.value R simulation", names = names)
 abline(h=0.05, col = "red")
 
 # Check figures of last simulation
@@ -108,8 +109,8 @@ par(mfrow=c(2,1))
 plot(y_own, main = "Own simulation", type = "l")
 plot(y_r, main = "R simulation", type = "l")
 
-par(mfrow=c(1,1))
-plot(yper_r, main = "Own periodogram")
+par(mfrow=c(2,1))
+plot(yper_own, main = "Own periodogram")
 lines(true_spectrum, type = "l", col = "red")
 plot(yper_r, main = "R periodogram")
 lines(true_spectrum, type = "l", col = "red")

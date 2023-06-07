@@ -86,9 +86,9 @@ for (j in 1:length(POWER)) {
 
 # Fitted MA coefficient
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
-boxplot(fit_own_coef, main = "Fitted MA(1) own simulation", names = names, xlab = "T", ylab=TeX("$\\hat{theta_1}$"))
+boxplot(fit_own_coef, main = "Fitted MA(1) own simulation", names = names, xlab = "T", ylab=TeX("$\\hat{theta}_1$"))
 abline(h=ma_coef, col = "red")
-boxplot(fit_r_coef, main = "Fitted MA(1) R simulation", names = names, xlab = "T", ylab = TeX("$\\hat{theta_1}$"))
+boxplot(fit_r_coef, main = "Fitted MA(1) R simulation", names = names, xlab = "T", ylab = TeX("$\\hat{theta}_1$"))
 abline(h=ma_coef, col = "red")
 graph_name = "Figure 1.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)

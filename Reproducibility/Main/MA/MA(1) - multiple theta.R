@@ -19,7 +19,7 @@ set.seed(0)
 # PARAMETERS
 ################################################################################
 
-ar_coef_vec = c(-0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9)
+ma_coef_vec = c(-0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9)
 POWER = 7:14
 N_SIMULATIONS = 1000
 names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
@@ -35,8 +35,8 @@ fit_r_exp_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWE
 p_val_own_exp_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 p_val_r_exp_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 
-for (param_number in 1:length(ar_coef_vec)) {
-  ar_coef = ar_coef_vec[param_number]
+for (param_number in 1:length(ma_coef_vec)) {
+  ma_coef = ma_coef_vec[param_number]
   fit_own_coef = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
   fit_r_coef = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
   fit_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -46,21 +46,21 @@ for (param_number in 1:length(ar_coef_vec)) {
 
   for (j in 1:length(POWER)) {
     T = 2^(POWER[j])
-    true_spectrum = farima.spectrum(ar = ar_coef, n.freq = T)
+    true_spectrum = farima.spectrum(ma = ma_coef, n.freq = T)
     for (sim in 1:N_SIMULATIONS) {
 
       # AR OWN simulations
-      y_own = sim.farima(ar = ar_coef, T = T)
+      y_own = sim.farima(ma = ma_coef, T = T)
 
       # AR EXISTING PACKAGE
-      y_r = arima.sim(model = list(ar = ar_coef), n = T)
+      y_r = arima.sim(model = list(ma = ma_coef), n = T)
 
       ################################################################################
       # FITTING
       ################################################################################
 
-      fit_own_coef[sim,j] = fit.farima(y_own, p = 1)[["ar"]]
-      fit_r_coef[sim,j] = fit.farima(y_r, p = 1)[["ar"]]
+      fit_own_coef[sim,j] = fit.farima(y_own, q = 1)[["ma"]]
+      fit_r_coef[sim,j] = fit.farima(y_r, q = 1)[["ma"]]
 
       ################################################################################
       # PERIODOGRAM
@@ -100,20 +100,20 @@ for (param_number in 1:length(ar_coef_vec)) {
 }
 
 ################################################################################
-# MSE COEFFICIENTS for phi
+# MSE COEFFICIENTS for theta
 ################################################################################
 
 # OWN CODE
-MSE_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
-MSE_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
-for (i in 1:length(ar_coef_vec)) {
-  MSE_own[i,] = colMeans((fit_own_coef_list[[i]]-ar_coef_vec[i])^2)
-  MSE_r[i,] = colMeans((fit_r_coef_list[[i]]-ar_coef_vec[i])^2)
+MSE_own = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+MSE_r = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+for (i in 1:length(ma_coef_vec)) {
+  MSE_own[i,] = colMeans((fit_own_coef_list[[i]]-ma_coef_vec[i])^2)
+  MSE_r[i,] = colMeans((fit_r_coef_list[[i]]-ma_coef_vec[i])^2)
 }
 
-rownames(MSE_own) = paste0("$\\mathbf{",ar_coef_vec,"}$")
+rownames(MSE_own) = paste0("$\\mathbf{",ma_coef_vec,"}$")
 colnames(MSE_own) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(MSE_r) = paste0("$\\mathbf{",ar_coef_vec,"}$")
+rownames(MSE_r) = paste0("$\\mathbf{",ma_coef_vec,"}$")
 colnames(MSE_r) = paste0("$\\mathbf{2^{",POWER,"}}$")
 
 comparison_matrix = as.matrix(MSE_own<=MSE_r)
@@ -129,16 +129,16 @@ print(MSE_r, include.rownames = TRUE, hline.after = c(-1,0, nrow(MSE_r)), saniti
 ################################################################################
 
 # OWN CODE
-MSE_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
-MSE_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
-for (i in 1:length(ar_coef_vec)) {
+MSE_own = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+MSE_r = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+for (i in 1:length(ma_coef_vec)) {
   MSE_own[i,] = colMeans((fit_own_exp_list[[i]]-1)^2)
   MSE_r[i,] = colMeans((fit_r_exp_list[[i]]-1)^2)
 }
 
-rownames(MSE_own) = paste0("$\\mathbf{",ar_coef_vec,"}$")
+rownames(MSE_own) = paste0("$\\mathbf{",ma_coef_vec,"}$")
 colnames(MSE_own) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(MSE_r) = paste0("$\\mathbf{",ar_coef_vec,"}$")
+rownames(MSE_r) = paste0("$\\mathbf{",ma_coef_vec,"}$")
 colnames(MSE_r) = paste0("$\\mathbf{2^{",POWER,"}}$")
 
 comparison_matrix = as.matrix(MSE_own<=MSE_r)
@@ -154,16 +154,16 @@ print(MSE_r, include.rownames = TRUE, hline.after = c(-1,0, nrow(MSE_r)), saniti
 ################################################################################
 
 # OWN CODE
-prop_non_rejection_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
-prop_non_rejection_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
-for (i in 1:length(ar_coef_vec)) {
+prop_non_rejection_own = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+prop_non_rejection_r = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+for (i in 1:length(ma_coef_vec)) {
   prop_non_rejection_own[i,] = colMeans(p_val_own_exp_list[[i]]>=0.05)
   prop_non_rejection_r[i,] = colMeans(p_val_r_exp_list[[i]]>=0.05)
 }
 
-rownames(prop_non_rejection_own) = paste0("$\\mathbf{",ar_coef_vec,"}$")
+rownames(prop_non_rejection_own) = paste0("$\\mathbf{",ma_coef_vec,"}$")
 colnames(prop_non_rejection_own) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(prop_non_rejection_r) = paste0("$\\mathbf{",ar_coef_vec,"}$")
+rownames(prop_non_rejection_r) = paste0("$\\mathbf{",ma_coef_vec,"}$")
 colnames(prop_non_rejection_r) = paste0("$\\mathbf{2^{",POWER,"}}$")
 
 comparison_matrix = as.matrix(prop_non_rejection_own<prop_non_rejection_r)

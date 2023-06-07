@@ -13,7 +13,7 @@
 spectral.density.farima <- function(eta = c(), p = 0, q = 0, d_long=0, x){
 
   if(p > 0) {
-    phi <- eta[1:(p)]
+    phi <- eta[1:p]
     px <- outer(x, 1:p)
     Rar <- cos(px) %*% phi
     Iar <- sin(px) %*% phi
@@ -41,9 +41,8 @@ spectral.density.farima <- function(eta = c(), p = 0, q = 0, d_long=0, x){
   }
   else{
     psi = 0
-    lm <- 1
+    lm = 1
   }
-
   spec <- lm*(fma/far)
 
   spectrum = (1/(2*pi))*spec

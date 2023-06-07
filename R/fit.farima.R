@@ -12,7 +12,6 @@
 #' @examples fit.farima(y, max.p = 1, max.q = 1, max.d = 1)
 
 fit.farima <- function(y, p = 0, q = 0, d = 0){
-
   n = length(y)
   # Fundamental frequencies
   mhalfm <- (n-1) %/% 2L
@@ -27,7 +26,7 @@ fit.farima <- function(y, p = 0, q = 0, d = 0){
   q = q
   d_long = d
   x = w
-  start_vals = c(rep(0, p+q),0)
+  start_vals = c(runif(n = p+q, min = -0.5, max = 0.5),0)
 
   obj.Whittle = function(theta, p = 0, q = 0, d_long=0, x){
 
@@ -40,8 +39,8 @@ fit.farima <- function(y, p = 0, q = 0, d = 0){
   }
 
   # Define the lower and upper bounds for the optimization
-  lower = c(rep(-1.125, p+q),0)
-  upper = c(rep(1.125, p+q),0.55)
+  lower = c(rep(-0.9999, p+q),0)
+  upper = c(rep(0.9999, p+q),0.55)
 
   opt_res = optim(par = start_vals, fn = obj.Whittle, p = p, q = q, d_long = d_long, x = x, lower = lower, upper = upper, method = "L-BFGS-B")
   # Print the optimized parameters

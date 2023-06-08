@@ -31,6 +31,8 @@ fit_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 fit_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 p_val_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 p_val_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
+time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
+time_r = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 
 for (j in 1:length(POWER)) {
   T = 2^(POWER[j])
@@ -38,10 +40,16 @@ for (j in 1:length(POWER)) {
   for (sim in 1:N_SIMULATIONS) {
 
     # AR OWN simulations
+    own_start = Sys.time()
     y_own = sim.farima(ar = ar_coef, T = T)
+    own_end = Sys.time()
+    time_own[sim,j] = own_end - own_start
 
     # AR EXISTING PACKAGE
+    own_start = Sys.time()
     y_r = arima.sim(model = list(ar = ar_coef), n = T)
+    own_end = Sys.time()
+    time_r[sim,j] = own_end - own_start
 
     ################################################################################
     # FITTING
@@ -83,6 +91,11 @@ for (j in 1:length(POWER)) {
 ################################################################################
 # VISUALIZE RESULTS
 ################################################################################
+
+# Run time AR coefficient
+par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
+boxplot(time_own, ylim=c(0,0.01), main = "Running time own simulation", names = names, ylab = "time (s)")
+boxplot(time_r,ylim=c(0,0.01), main = "Running time R simulation", names = names, ylab = "time (s)")
 
 # Fitted AR coefficient
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))

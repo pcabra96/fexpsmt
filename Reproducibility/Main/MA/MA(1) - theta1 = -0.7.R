@@ -24,7 +24,7 @@ names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$
 # SIMULATION
 ################################################################################
 
-N_SIMULATIONS = 500
+N_SIMULATIONS = 1000
 fit_own_coef = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 fit_r_coef = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 fit_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -93,59 +93,70 @@ for (j in 1:length(POWER)) {
 # VISUALIZE RESULTS
 ################################################################################
 
-# Run time AR coefficient
-par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
-boxplot(time_own, ylim=c(0,0.02), main = "Running time own simulation", names = names, ylab = "time (s)")
-boxplot(time_r,ylim=c(0,0.02), main = "Running time R simulation", names = names, ylab = "time (s)")
+# Run time MA coefficient
+par(mfrow=c(1,2), mar = c(5, 4, 2, 2)) # mar = c(bottom, left, top, right))
+main = paste0("Simulation time for ",N_SIMULATIONS," $\\{y_{MA(theta_1=",ma_coef,")_t,own}\\}_{t=1}^{T}$")
+boxplot(time_own, ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
+main = paste0("Simulation time for ",N_SIMULATIONS," $\\{y_{MA(theta_1=",ma_coef,")_t,R}\\}_{t=1}^{T}$")
+boxplot(time_r,ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
 graph_name = "Figure 1.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
-dev.print(device = png, filename = path, width = 1597, height = 987, res=200)
-
+dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
 
 # Fitted MA coefficient
-par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
-boxplot(fit_own_coef, main = "Fitted MA(1) own simulation", names = names, xlab = "T", ylab=TeX("$\\hat{theta}_1$"))
+par(mfrow=c(1,2), mar = c(4.5, 5, 3, 1)) # mar = c(bottom, left, top, right))
+main = paste0("Fitted $\\theta_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{MA(\\theta_1=",ma_coef,")_t,own}\\}_{t=1}^{T}$")
+boxplot(fit_own_coef, main = TeX(main), names = names, xlab = "T", ylab=TeX("$\\hat{\\theta_1}$"))
 abline(h=ma_coef, col = "red")
-boxplot(fit_r_coef, main = "Fitted MA(1) R simulation", names = names, xlab = "T", ylab = TeX("$\\hat{theta}_1$"))
+main = paste0("Fitted $\\theta_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{MA(\\theta_1=",ma_coef,")_t,R}\\}_{t=1}^{T}$")
+boxplot(fit_r_coef, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{\\theta_1}$"))
 abline(h=ma_coef, col = "red")
-graph_name = "Figure 1.png"
+graph_name = "Figure 2.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
-dev.print(device = png, filename = path, width = 1597, height = 987, res=200)
+dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
 
 # Fitted MA periodogram
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2))
-boxplot(fit_own_exp, main = "Fitted EXP(1) own simulation", names = names, xlab = "T", ylab = TeX("$\\hat{lambda}$"))
+main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{MA(\\theta_1=",ma_coef,")_t,own}\\}_{k=1}^{T-1}$")
+boxplot(fit_own_exp, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{lambda}_{MLE}$"))
 abline(h=1, col = "red")
-boxplot(fit_r_exp, main = "Fitted EXP(1) R simulation", names = names, xlab = "T", ylab =TeX("$\\hat{lambda}$"))
+main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{MA(\\theta_1=",ma_coef,")_t,R}\\}_{k=1}^{T-1}$")
+boxplot(fit_r_exp, main = TeX(main), names = names, xlab = "T", ylab =TeX("$\\hat{lambda}_{MLE}$"))
 abline(h=1, col = "red")
-graph_name = "Figure 2.png"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
-dev.print( device = png, filename = path, width = 987, height = 610)
-
-# P value
-par(mfrow=c(1,2))
-boxplot(p_val_own_exp, main = TeX("$H_0: \ \\{y_{MA_{own_t}}\\}_{t=1}^{T} \\sim exp(\\lambda=1)$"),ylab = "p.value", names = names)
-abline(h=0.05, col = "red")
-boxplot(p_val_r_exp, main = TeX("$H_0: \ \\{y_{MA_{R_t}}\\}_{t=1}^{T} \\sim exp(\\lambda=1)$"), ylab = "p.value", names = names)
-abline(h=0.05, col = "red")
 graph_name = "Figure 3.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
-dev.print( device = png, filename = path, width = 987, height = 610)
+dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
+
+# P value
+par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2))
+main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{MA(\\theta_1 = ", ma_coef, ")_t,own}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+boxplot(p_val_own_exp, main = TeX(main), ylab = "p.value", names = names, xlab = "T")
+abline(h=0.05, col = "red")
+main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{MA(\\theta_1 = ", ma_coef, ")_t,R}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+boxplot(p_val_r_exp, main = TeX(main), ylab = "p.value", names = names, xlab = "T")
+abline(h=0.05, col = "red")
+graph_name = "Figure 4.png"
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
+dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
 
 # Check figures of last simulation
 par(mfrow=c(2,1))
-plot(y_own, main = "Own simulation", type = "l", ylab = TeX("$y_{MA_{own}}$"), xlab = "")
-plot(y_r, main = "R simulation", type = "l", ylab = TeX("$y_{MA_{R}}$"), xlab = "")
-graph_name = "Figure 4.png"
+main = paste0("One realization of $\\{y_{MA(theta_1=",ma_coef,")_t,own}\\}_{t=1}^{",2,"^{",POWER[length(POWER)],"}}$")
+plot(y_own, main = TeX(main), type = "l", ylab = TeX("$y_{own}$"), xlab = "")
+main = paste0("One realization of $\\{y_{MA(theta_1=",ma_coef,")_t,R}\\}_{t=1}^{",2,"^{",POWER[length(POWER)],"}}$")
+plot(y_r, main = TeX(main), type = "l", ylab = TeX("$y_{R}$"), xlab = "")
+graph_name = "Figure 5.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
-dev.print( device = png, filename = path, width = 987, height = 610)
+dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
 
 # par(mar = c(bottom, left, top, right)
 par(mfrow=c(2,1), mar = c(3, 5, 2, 2))
-plot(yper_own, main = TeX("Own $I(\\omega)$"), ylab = TeX("$I_{MA(1)}(\\omega)$"))
+main = paste0("One realization of $\\{I(\\omega_k)^*_{MA(\\theta_1 = ", ma_coef, ")_t,own}\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
+plot(yper_own, ylab = TeX("$I(\\omega)$"), main = TeX(main), ylim = c(0,6))
 lines(true_spectrum, type = "l", col = "red")
-plot(yper_r, main = TeX("R $I(\\omega)$"), ylab = TeX("$I_{MA(1)}(\\omega)$"))
+main = paste0("One realization of $\\{I(\\omega_k)^*_{MA(\\theta_1 = ", ma_coef, ")_t,R}\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
+plot(yper_r, ylab = TeX("$I(\\omega)$"), main = TeX(main), ylim = c(0,6))
 lines(true_spectrum, type = "l", col = "red")
-graph_name = "Figure 5.png"
+graph_name = "Figure 6.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
-dev.print( device = png, filename = path, width = 987, height = 610)
+dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)

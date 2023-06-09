@@ -1,15 +1,9 @@
-
-
 ################################################################################
 # PACKAGES
 ################################################################################
 
 library(forecast)
 require(MASS)
-library(latex2exp)
-library(xtable)
-library(Hmisc)
-library(kableExtra)
 
 ################################################################################
 # SEED
@@ -118,11 +112,81 @@ for (param_number in 1:length(ar_coef_vec)) {
 
 path = "~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/"
 
-saveRDS(fit_own_coef_list, file = paste0(path,"phi_1_own.RData"))
-saveRDS(fit_r_coef_list, file = paste0(path,"phi_1_r.RData"))
-saveRDS(fit_own_exp_list, file = paste0(path,"lambda_own.RData"))
-saveRDS(fit_r_exp_list, file = paste0(path,"lambda_r.RData"))
-saveRDS(p_val_own_exp_list, file = paste0(path,"p.val_own.RData"))
-saveRDS(p_val_r_exp_list, file = paste0(path,"p.val:R.RData"))
-saveRDS(time_own_list, file = paste0(path,"time_own.RData"))
-saveRDS(time_r_list, file = paste0(path,"\time_R.RData"))
+################################################################################
+# Running time
+################################################################################
+
+average_time_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+average_time_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+for (i in 1:length(ar_coef_vec)) {
+  average_time_own[i,] = colMeans((time_own_list[[i]]))
+  average_time_r[i,] = colMeans((time_r_list[[i]]))
+}
+
+# Visualization
+rownames(average_time_own) = ar_coef_vec
+colnames(average_time_own) = POWER
+rownames(average_time_r) = ar_coef_vec
+colnames(average_time_r) = POWER
+
+saveRDS(average_time_own, file = paste0(path,"time_own.RData"))
+saveRDS(average_time_r, file = paste0(path,"time_R.RData"))
+
+################################################################################
+# MSE COEFFICIENTS for phi
+################################################################################
+
+MSE_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+MSE_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+for (i in 1:length(ar_coef_vec)) {
+  MSE_own[i,] = colMeans((fit_own_coef_list[[i]]-ar_coef_vec[i])^2)
+  MSE_r[i,] = colMeans((fit_r_coef_list[[i]]-ar_coef_vec[i])^2)
+}
+
+rownames(MSE_own) = ar_coef_vec
+colnames(MSE_own) = POWER
+rownames(MSE_r) = ar_coef_vec
+colnames(MSE_r) = POWER
+
+saveRDS(MSE_own, file = paste0(path,"time_own.RData"))
+saveRDS(MSE_r, file = paste0(path,"time_R.RData"))
+
+################################################################################
+# MSE COEFFICIENTS for lambda=1
+################################################################################
+
+# OWN CODE
+MSE_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+MSE_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+for (i in 1:length(ar_coef_vec)) {
+  MSE_own[i,] = colMeans((fit_own_exp_list[[i]]-1)^2)
+  MSE_r[i,] = colMeans((fit_r_exp_list[[i]]-1)^2)
+}
+
+rownames(MSE_own) = ar_coef_vec
+colnames(MSE_own) = POWER
+rownames(MSE_r) = ar_coef_vec
+colnames(MSE_r) = POWER
+
+saveRDS(MSE_r, file = paste0(path,"lambda_own.RData"))
+saveRDS(MSE_r, file = paste0(path,"lambda_r.RData"))
+
+################################################################################
+# Correct p-values for EXP(1)
+################################################################################
+
+# OWN CODE
+prop_non_rejection_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+prop_non_rejection_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
+for (i in 1:length(ar_coef_vec)) {
+  prop_non_rejection_own[i,] = colMeans(p_val_own_exp_list[[i]]>=0.05)
+  prop_non_rejection_r[i,] = colMeans(p_val_r_exp_list[[i]]>=0.05)
+}
+
+rownames(prop_non_rejection_own) = ar_coef_vec
+colnames(prop_non_rejection_own) = POWER
+rownames(prop_non_rejection_r) = ar_coef_vec
+colnames(prop_non_rejection_r) = POWER
+
+saveRDS(prop_non_rejection_own, file = paste0(path,"p.val_own.RData"))
+saveRDS(prop_non_rejection_r, file = paste0(path,"p.val_R.RData"))

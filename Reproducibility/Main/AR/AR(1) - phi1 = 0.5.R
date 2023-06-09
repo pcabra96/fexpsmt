@@ -24,7 +24,7 @@ names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$
 # SIMULATION
 ################################################################################
 
-N_SIMULATIONS = 500
+N_SIMULATIONS = 1000
 fit_own_coef = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 fit_r_coef = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 fit_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -93,18 +93,22 @@ for (j in 1:length(POWER)) {
 ################################################################################
 
 # Run time AR coefficient
-par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
-boxplot(time_own, ylim=c(0,0.02), main = "Running time own simulation", names = names, ylab = "time (s)")
-boxplot(time_r,ylim=c(0,0.02), main = "Running time R simulation", names = names, ylab = "time (s)")
+par(mfrow=c(1,2), mar = c(5, 4, 2, 2)) # mar = c(bottom, left, top, right))
+main = paste0("Simulation time for $\\",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,own}\\}_{t=1}^{T}$")
+boxplot(time_own, ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
+main = paste0("Simulation time for $\\",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,R}\\}_{t=1}^{T}$")
+boxplot(time_r,ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
 graph_name = "Figure 1.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
-dev.print(device = png, filename = path, width = 1597, height = 987, res=200)
+dev.print(device = png, filename = path, width = 1650, height = 987, res=200)
 
 # Fitted AR coefficient
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
-boxplot(fit_own_coef, main = "Fitted AR(1) own simulation", names = names, xlab = "T", ylab=TeX("$\\hat{phi_1}$"))
+main = paste0("Fitted $\\phi_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,own}\\}_{t=1}^{T}$")
+boxplot(fit_own_coef, main = TeX(main), names = names, xlab = "T", ylab=TeX("$\\hat{phi_1}$"))
 abline(h=ar_coef, col = "red")
-boxplot(fit_r_coef, main = "Fitted AR(1) R simulation", names = names, xlab = "T", ylab = TeX("$\\hat{phi_1}$"))
+main = paste0("Fitted $\\phi_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,R}\\}_{t=1}^{T}$")
+boxplot(fit_r_coef, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{phi_1}$"))
 abline(h=ar_coef, col = "red")
 graph_name = "Figure 2.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
@@ -112,9 +116,11 @@ dev.print(device = png, filename = path, width = 1597, height = 987, res=200)
 
 # Fitted AR periodogram
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2))
-boxplot(fit_own_exp, main = "Fitted EXP(1) own simulation", names = names, xlab = "T", ylab = TeX("$\\hat{lambda}$"))
+main = paste0("$Boxplot \\ of \\ \\hat{lambda}_{MLE} \\ from \\ \\{I(\\omega_k)^*_{AR(phi_1=",ar_coef,")_t,own}\\}_{k=1}^{T-1}$")
+boxplot(fit_own_exp, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{lambda}_{MLE}$"))
 abline(h=1, col = "red")
-boxplot(fit_r_exp, main = "Fitted EXP(1) R simulation", names = names, xlab = "T", ylab =TeX("$\\hat{lambda}$"))
+main = paste0("$Boxplot \\ of \\ \\hat{lambda}_{MLE} \\ from \\ \\{I(\\omega_k)^*_{AR(phi_1=",ar_coef,")_t,R}\\}_{k=1}^{T-1}$")
+boxplot(fit_r_exp, main = TeX(main), names = names, xlab = "T", ylab =TeX("$\\hat{lambda}_{MLE}$"))
 abline(h=1, col = "red")
 graph_name = "Figure 3.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
@@ -122,9 +128,11 @@ dev.print( device = png, filename = path, width = 987, height = 610)
 
 # P value
 par(mfrow=c(1,2))
-boxplot(p_val_own_exp, main = TeX("$H_0: \ \\{y_{own_t}\\}_{t=1}^{T} \\sim exp(\\lambda=1)$"),ylab = "p.value", names = names)
+main = paste0("$H_0: \\ \\{I(\\omega_k)^*_{AR(phi_1 = ", ar_coef, ")_t}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+boxplot(p_val_own_exp, main = TeX(main), ylab = "p.value own simulations", names = names)
 abline(h=0.05, col = "red")
-boxplot(p_val_r_exp, main = TeX("$H_0: \ \\{y_{R_t}\\}_{t=1}^{T} \\sim exp(\\lambda=1)$"), ylab = "p.value", names = names)
+main = paste0("$H_0: \\ \\{I(\\omega_k)^*_{AR(phi_1 = ", ar_coef, ")_t}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+boxplot(p_val_r_exp, main = TeX(main), ylab = "p.value R simulations", names = names)
 abline(h=0.05, col = "red")
 graph_name = "Figure 4.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)

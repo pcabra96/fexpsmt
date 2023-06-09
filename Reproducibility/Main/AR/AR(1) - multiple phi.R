@@ -34,6 +34,8 @@ fit_own_exp_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(PO
 fit_r_exp_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 p_val_own_exp_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 p_val_r_exp_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
+time_own_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
+time_r_list = replicate(10, matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 
 for (param_number in 1:length(ar_coef_vec)) {
   ar_coef = ar_coef_vec[param_number]
@@ -43,6 +45,8 @@ for (param_number in 1:length(ar_coef_vec)) {
   fit_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
   p_val_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
   p_val_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
+  time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
+  time_r = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 
   for (j in 1:length(POWER)) {
     T = 2^(POWER[j])
@@ -50,10 +54,15 @@ for (param_number in 1:length(ar_coef_vec)) {
     for (sim in 1:N_SIMULATIONS) {
 
       # AR OWN simulations
+      start_own = Sys.time()
       y_own = sim.farima(ar = ar_coef, T = T)
-
+      end_own = Sys.time()
+      time_own[sim,j] = end_own-start_own
       # AR EXISTING PACKAGE
+      start_r = Sys.time()
       y_r = arima.sim(model = list(ar = ar_coef), n = T)
+      end_r = Sys.time()
+      time_r[sim,j] = end_r-start_r
 
       ################################################################################
       # FITTING
@@ -97,13 +106,19 @@ for (param_number in 1:length(ar_coef_vec)) {
   fit_r_exp_list[[param_number]] = fit_r_exp
   p_val_own_exp_list[[param_number]] = p_val_own_exp
   p_val_r_exp_list[[param_number]] = p_val_r_exp
+  time_own_list[[param_number]] = time_own
+  time_r_list[[param_number]] = time_r
 }
+
+################################################################################
+# Running time
+################################################################################
+
 
 ################################################################################
 # MSE COEFFICIENTS for phi
 ################################################################################
 
-# OWN CODE
 MSE_own = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
 MSE_r = matrix(0, nrow = length(ar_coef_vec), ncol = length(POWER))
 for (i in 1:length(ar_coef_vec)) {

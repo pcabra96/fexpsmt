@@ -46,10 +46,10 @@ for (j in 1:length(POWER)) {
     time_own[sim,j] = own_end - own_start
 
     # AR EXISTING PACKAGE
-    own_start = Sys.time()
+    r_start = Sys.time()
     y_r = arima.sim(model = list(ar = ar_coef), n = T)
-    own_end = Sys.time()
-    time_r[sim,j] = own_end - own_start
+    r_end = Sys.time()
+    time_r[sim,j] = r_end - r_start
 
     ################################################################################
     # FITTING
@@ -94,8 +94,11 @@ for (j in 1:length(POWER)) {
 
 # Run time AR coefficient
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
-boxplot(time_own, ylim=c(0,0.01), main = "Running time own simulation", names = names, ylab = "time (s)")
-boxplot(time_r,ylim=c(0,0.01), main = "Running time R simulation", names = names, ylab = "time (s)")
+boxplot(time_own, ylim=c(0,0.02), main = "Running time own simulation", names = names, ylab = "time (s)")
+boxplot(time_r,ylim=c(0,0.02), main = "Running time R simulation", names = names, ylab = "time (s)")
+graph_name = "Figure 1.png"
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
+dev.print(device = png, filename = path, width = 1597, height = 987, res=200)
 
 # Fitted AR coefficient
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2)) # mar = c(bottom, left, top, right))
@@ -103,7 +106,7 @@ boxplot(fit_own_coef, main = "Fitted AR(1) own simulation", names = names, xlab 
 abline(h=ar_coef, col = "red")
 boxplot(fit_r_coef, main = "Fitted AR(1) R simulation", names = names, xlab = "T", ylab = TeX("$\\hat{phi_1}$"))
 abline(h=ar_coef, col = "red")
-graph_name = "Figure 1.png"
+graph_name = "Figure 2.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
 dev.print(device = png, filename = path, width = 1597, height = 987, res=200)
 
@@ -113,7 +116,7 @@ boxplot(fit_own_exp, main = "Fitted EXP(1) own simulation", names = names, xlab 
 abline(h=1, col = "red")
 boxplot(fit_r_exp, main = "Fitted EXP(1) R simulation", names = names, xlab = "T", ylab =TeX("$\\hat{lambda}$"))
 abline(h=1, col = "red")
-graph_name = "Figure 2.png"
+graph_name = "Figure 3.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
 dev.print( device = png, filename = path, width = 987, height = 610)
 
@@ -123,7 +126,7 @@ boxplot(p_val_own_exp, main = TeX("$H_0: \ \\{y_{own_t}\\}_{t=1}^{T} \\sim exp(\
 abline(h=0.05, col = "red")
 boxplot(p_val_r_exp, main = TeX("$H_0: \ \\{y_{R_t}\\}_{t=1}^{T} \\sim exp(\\lambda=1)$"), ylab = "p.value", names = names)
 abline(h=0.05, col = "red")
-graph_name = "Figure 3.png"
+graph_name = "Figure 4.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
 dev.print( device = png, filename = path, width = 987, height = 610)
 
@@ -131,7 +134,7 @@ dev.print( device = png, filename = path, width = 987, height = 610)
 par(mfrow=c(2,1))
 plot(y_own, main = "Own simulation", type = "l", ylab = TeX("$y_{own}$"), xlab = "")
 plot(y_r, main = "R simulation", type = "l", ylab = TeX("$y_{R}$"), xlab = "")
-graph_name = "Figure 4.png"
+graph_name = "Figure 5.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
 dev.print( device = png, filename = path, width = 987, height = 610)
 
@@ -142,6 +145,6 @@ plot(yper_own, main = TeX("Own $I(\\omega)$"), ylab = TeX("$I_{AR(1)}(\\omega)$"
 lines(true_spectrum, type = "l", col = "red")
 plot(yper_r, main = TeX("R $I(\\omega)$"), ylab = TeX("$I_{AR(1)}(\\omega)$"))
 lines(true_spectrum, type = "l", col = "red")
-graph_name = "Figure 5.png"
+graph_name = "Figure 6.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
 dev.print( device = png, filename = path, width = 987, height = 610)

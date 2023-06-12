@@ -34,11 +34,11 @@ path = "~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/A
 time_own_matrix = readRDS(file = paste0(path,"time_own.RData"))
 time_r_matrix = readRDS(file = paste0(path,"time_R.RData"))
 
-main = paste0("Running time average of ", N_SIMULATIONS, " simulations of all the AR coefficient")
-plot(x = POWER, y = colMeans(time_own_matrix),main = TeX(main), type = "l", ylab = "time (s)", labels = FALSE, xlab = "T")
+plot(x = POWER, y = colMeans(time_own_matrix), type = "l", ylab = "time (s)", labels = FALSE, xlab = "T")
 lines(x = POWER, y = colMeans(time_r_matrix), type = "l", col = "red")
 axis(1, at=POWER, labels = names)
 axis(2)
+legend("topleft", legend = c("fepxmst", "stats"), col = c("black", "red"), lty = 1)
 graph_name = "Figure 7.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
 dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)

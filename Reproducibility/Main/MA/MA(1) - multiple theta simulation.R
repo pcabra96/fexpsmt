@@ -153,8 +153,8 @@ colnames(MSE_own) = POWER
 rownames(MSE_r) = ma_coef_vec
 colnames(MSE_r) = POWER
 
-saveRDS(MSE_own, file = paste0(path,"phi_1_own.RData"))
-saveRDS(MSE_r, file = paste0(path,"phi_1_r.RData"))
+saveRDS(MSE_own, file = paste0(path,"theta_1_own.RData"))
+saveRDS(MSE_r, file = paste0(path,"theta_1_r.RData"))
 
 ################################################################################
 # MSE COEFFICIENTS for lambda=1

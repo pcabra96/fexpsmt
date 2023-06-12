@@ -16,6 +16,7 @@ library(plot.matrix)
 
 ar_coef_vec = c(-0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9)
 POWER = 7:14
+x_axis = c(2^7,2^9,2^9,2^10,2^11,2^12,2^13,2^14)
 N_SIMULATIONS = 1000
 names = c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
 
@@ -32,6 +33,10 @@ path = "~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/A
 # DATA
 time_own_matrix = readRDS(file = paste0(path,"time_own.RData"))
 time_r_matrix = readRDS(file = paste0(path,"time_R.RData"))
+
+plot(x = POWER, y = colMeans(time_own_matrix), type = "l", ylab = "time (s)")
+lines(x = POWER, y = colMeans(time_r_matrix), type = "l", col = "red",at =  POWER, labels = names)
+
 
 # AXIS NAMES FOR LATEX
 rownames(time_own_matrix) = paste0("$\\mathbf{",ar_coef_vec,"}$")

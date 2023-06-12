@@ -29,9 +29,6 @@ names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$
 
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/",PROCESS,"/")
 
-saveRDS(ar_coef_vec, file = paste0(path,"ar_coef_vec.RData"))
-saveRDS(ma_coef_vec, file = paste0(path,"ma_coef_vec.RData"))
-
 # TIME
 time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 time_r = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -61,11 +58,14 @@ for (sim in 1:N_SIMULATIONS) {
     T = 2^(POWER[j])
     ar_coef = ar_coef_vec[sim]
     ma_coef = ma_coef_vec[sim]
-    true_spectrum = farima.spectrum(ar = ,ma= , n.freq = T)
+    if(0.05268817>abs(ma_coef+ar_coef)){
+      ma_coef = -ma_coef
+    }
+    true_spectrum = farima.spectrum(ar = ar_coef,ma= ma_coef, n.freq = T)
 
     # ARMA(1,1) OWN simulations
     start_own = Sys.time()
-    y_own = sim.farima(ar = ar_coef, ma = , T = T)
+    y_own = sim.farima(ar = ar_coef, ma = ma_coef, T = T)
     end_own = Sys.time()
     time_own[sim,j] = end_own-start_own
 

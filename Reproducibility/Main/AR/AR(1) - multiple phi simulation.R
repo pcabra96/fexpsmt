@@ -168,7 +168,7 @@ colnames(MSE_own) = POWER
 rownames(MSE_r) = ar_coef_vec
 colnames(MSE_r) = POWER
 
-saveRDS(MSE_r, file = paste0(path,"lambda_own.RData"))
+saveRDS(MSE_own, file = paste0(path,"lambda_own.RData"))
 saveRDS(MSE_r, file = paste0(path,"lambda_r.RData"))
 
 ################################################################################

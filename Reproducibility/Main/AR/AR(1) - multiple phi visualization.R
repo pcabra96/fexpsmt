@@ -65,17 +65,18 @@ print(time_r_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(time_r_
 fit_own_coef_matrix = readRDS(file = paste0(path,"phi_1_own.RData"))
 fit_r_coef_matrix = readRDS(file = paste0(path,"phi_1_r.RData"))
 
+# Are the MSE different
 t.test(fit_own_coef_matrix,fit_r_coef_matrix)
 
 plot(x = POWER, y = colMeans(fit_own_coef_matrix), type = "l", ylab = "MSE", labels = FALSE, xlab = "T", col = "blue")
-lines(x = POWER, y = apply(fit_own_coef_matrix, 2, max), type = "l", col = "blue")
-lines(x = POWER, y = apply(fit_own_coef_matrix, 2, min), type = "l", col = "blue")
 lines(x = POWER, y = colMeans(fit_r_coef_matrix), type = "l", col = "red")
-lines(x = POWER, y = apply(fit_r_coef_matrix, 2, max), type = "l", col = "red")
-lines(x = POWER, y = apply(fit_r_coef_matrix, 2, min), type = "l", col = "red")
 axis(1, at=POWER, labels = names)
 axis(2)
 legend("topright", legend = c("fepxmst", "stats"), col = c("blue", "red"), lty = 1)
+graph_name = "Figure 8. png"
+the_path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
+dev.print(device = png, filename = the_path, width = 1800, height = 1100, res=200)
+
 
 # AXIS NAMES FOR LATEX
 rownames(fit_own_coef_matrix) = paste0("$\\mathbf{",ar_coef_vec,"}$")
@@ -99,6 +100,16 @@ print(fit_r_coef_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit
 fit_own_exp_matrix = readRDS(file = paste0(path,"lambda_own.RData"))
 fit_r_exp_matrix = readRDS(file = paste0(path,"lambda_r.RData"))
 
+plot(x = POWER, y = colMeans(fit_own_exp_matrix), type = "l", ylab = "MSE", labels = FALSE, xlab = "T", col = "blue")
+lines(x = POWER, y = colMeans(fit_r_exp_matrix), type = "l", col = "red")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topright", legend = c("fepxmst", "stats"), col = c("blue", "red"), lty = 1)
+graph_name = "Figure 9.png"
+the_path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
+dev.print(device = png, filename = the_path, width = 1800, height = 1100, res=200)
+
+
 # AXIS NAMES FOR LATEX
 rownames(fit_own_exp_matrix) = paste0("$\\mathbf{",ar_coef_vec,"}$")
 colnames(fit_own_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
@@ -120,6 +131,16 @@ print(fit_r_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_
 # DATA
 p_val_own_exp_matrix = readRDS(file = paste0(path,"p.val_own.RData"))
 p_val_r_exp_matrix = readRDS(file = paste0(path,"p.val_R.RData"))
+
+plot(x = POWER, y = colMeans(p_val_own_exp_matrix), type = "l", ylab = "p.value", labels = FALSE, xlab = "T", col = "blue")
+lines(x = POWER, y = colMeans(p_val_r_exp_matrix), type = "l", col = "red")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topleft", legend = c("fepxmst", "stats"), col = c("blue", "red"), lty = 1)
+graph_name = "Figure 10.png"
+the_path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
+dev.print(device = png, filename = the_path, width = 1800, height = 1100, res=200)
+
 
 # AXIS NAMES FOR LATEX
 rownames(p_val_own_exp_matrix) = paste0("$\\mathbf{",ar_coef_vec,"}$")

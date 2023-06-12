@@ -109,7 +109,6 @@ for (param_number in 1:length(ma_coef_vec)) {
   p_val_r_exp_list[[param_number]] = p_val_r_exp
   time_own_list[[param_number]] = time_own
   time_r_list[[param_number]] = time_r
-
 }
 
 ################################################################################

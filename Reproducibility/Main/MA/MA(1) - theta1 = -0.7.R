@@ -10,7 +10,7 @@ library(latex2exp)
 # SEED
 ################################################################################
 
-set.seed(0)
+set.seed(1)
 
 ################################################################################
 # PARAMETERS
@@ -33,7 +33,6 @@ p_val_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 p_val_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 time_r = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
-
 
 for (j in 1:length(POWER)) {
   T = 2^(POWER[j])
@@ -93,34 +92,34 @@ for (j in 1:length(POWER)) {
 # VISUALIZE RESULTS
 ################################################################################
 
-# Run time MA coefficient
+# Run time AR coefficient
 par(mfrow=c(1,2), mar = c(5, 4, 2, 2)) # mar = c(bottom, left, top, right))
-main = paste0("Simulation time for ",N_SIMULATIONS," $\\{y_{MA(theta_1=",ma_coef,")_t,own}\\}_{t=1}^{T}$")
+main = paste0("Simulation time for $\\",N_SIMULATIONS," \\ \\{y_{MA(theta_1=",ma_coef,")_t,own}\\}_{t=1}^{T}$")
 boxplot(time_own, ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
-main = paste0("Simulation time for ",N_SIMULATIONS," $\\{y_{MA(theta_1=",ma_coef,")_t,R}\\}_{t=1}^{T}$")
+main = paste0("Simulation time for $\\",N_SIMULATIONS," \\ \\{y_{MA(theta_1=",ma_coef,")_t,R}\\}_{t=1}^{T}$")
 boxplot(time_r,ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
 graph_name = "Figure 1.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
 dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
 
-# Fitted MA coefficient
+# Fitted AR coefficient
 par(mfrow=c(1,2), mar = c(4.5, 5, 3, 1)) # mar = c(bottom, left, top, right))
-main = paste0("Fitted $\\theta_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{MA(\\theta_1=",ma_coef,")_t,own}\\}_{t=1}^{T}$")
-boxplot(fit_own_coef, main = TeX(main), names = names, xlab = "T", ylab=TeX("$\\hat{\\theta_1}$"))
+main = paste0("Fitted $\\theta_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{MA(theta_1=",ma_coef,")_t,own}\\}_{t=1}^{T}$")
+boxplot(fit_own_coef, main = TeX(main), names = names, xlab = "T", ylab=TeX("$\\hat{theta_1}$"))
 abline(h=ma_coef, col = "red")
-main = paste0("Fitted $\\theta_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{MA(\\theta_1=",ma_coef,")_t,R}\\}_{t=1}^{T}$")
-boxplot(fit_r_coef, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{\\theta_1}$"))
+main = paste0("Fitted $\\theta_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{MA(theta_1=",ma_coef,")_t,R}\\}_{t=1}^{T}$")
+boxplot(fit_r_coef, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{theta_1}$"))
 abline(h=ma_coef, col = "red")
 graph_name = "Figure 2.png"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/MA/", graph_name)
 dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
 
-# Fitted MA periodogram
+# Fitted AR periodogram
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2))
-main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{MA(\\theta_1=",ma_coef,")_t,own}\\}_{k=1}^{T-1}$")
+main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{MA(theta_1=",ma_coef,")_t,own}\\}_{k=1}^{T-1}$")
 boxplot(fit_own_exp, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{lambda}_{MLE}$"))
 abline(h=1, col = "red")
-main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{MA(\\theta_1=",ma_coef,")_t,R}\\}_{k=1}^{T-1}$")
+main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{MA(theta_1=",ma_coef,")_t,R}\\}_{k=1}^{T-1}$")
 boxplot(fit_r_exp, main = TeX(main), names = names, xlab = "T", ylab =TeX("$\\hat{lambda}_{MLE}$"))
 abline(h=1, col = "red")
 graph_name = "Figure 3.png"
@@ -129,10 +128,10 @@ dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
 
 # P value
 par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2))
-main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{MA(\\theta_1 = ", ma_coef, ")_t,own}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{MA(theta_1 = ", ma_coef, ")_t,own}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
 boxplot(p_val_own_exp, main = TeX(main), ylab = "p.value", names = names, xlab = "T")
 abline(h=0.05, col = "red")
-main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{MA(\\theta_1 = ", ma_coef, ")_t,R}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{MA(theta_1 = ", ma_coef, ")_t,R}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
 boxplot(p_val_r_exp, main = TeX(main), ylab = "p.value", names = names, xlab = "T")
 abline(h=0.05, col = "red")
 graph_name = "Figure 4.png"

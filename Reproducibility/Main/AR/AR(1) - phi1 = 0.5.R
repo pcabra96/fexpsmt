@@ -16,6 +16,7 @@ set.seed(1)
 # PARAMETERS
 ################################################################################
 
+PROCESS = "AR"
 ar_coef = 0.5
 POWER = 7:14
 names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
@@ -92,70 +93,194 @@ for (j in 1:length(POWER)) {
 # VISUALIZE RESULTS
 ################################################################################
 
-# Run time AR coefficient
-par(mfrow=c(1,2), mar = c(5, 4, 2, 2)) # mar = c(bottom, left, top, right))
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/",PROCESS,"/")
+
+################################################################################
+# Running time
+################################################################################
+
+# Limits
+lim_inf = min(c(time_own,time_r))
+lim_sup = max(c(time_own,time_r))
+
+# Run time AR coefficient two boxplots
+par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
+boxplot(time_own, ylim=c(0,0.02), names = names, ylab = "time (s)", xlab = "T")
+title(main = "fexpmst", cex.main = 0.8, line = 0.5)
+boxplot(time_r,ylim=c(0,0.02), names = names, ylab = "time (s)", xlab = "T")
 main = paste0("Simulation time for $\\",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,own}\\}_{t=1}^{T}$")
-boxplot(time_own, ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
+title(main = "stats", cex.main = 0.8, line = 0.5)
 main = paste0("Simulation time for $\\",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,R}\\}_{t=1}^{T}$")
-boxplot(time_r,ylim=c(0,0.02), main = TeX(main), names = names, ylab = "time (s)", xlab = "T")
+mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
+
 graph_name = "Figure 1.png"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
-dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+dev.off()
+
+# Run time AR coefficient one graph
+par(mfrow=c(1,1))
+plot(x = POWER, y = colMeans(time_own), col = "blue", type = "o", ylim=c(lim_inf,lim_sup/2), ylab = "time (s)", labels = FALSE, xlab = "T")
+lines(x = POWER, y = colMeans(time_r), col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topleft", legend = c("fepxmst", "stats"), col = c("blue", "red"), lty = 1)
+main = paste0("Average running time for $\\",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,R}\\}_{t=1}^{T}$")
+mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
+
+graph_name = "Figure 2.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+dev.off()
+
+################################################################################
+# MSE COEFFICIENTS for phi
+################################################################################
 
 # Fitted AR coefficient
-par(mfrow=c(1,2), mar = c(4.5, 5, 3, 1)) # mar = c(bottom, left, top, right))
-main = paste0("Fitted $\\phi_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,own}\\}_{t=1}^{T}$")
-boxplot(fit_own_coef, main = TeX(main), names = names, xlab = "T", ylab=TeX("$\\hat{phi_1}$"))
+par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
+boxplot(fit_own_coef, names = names, xlab = "T", ylab=TeX("$\\hat{phi_1}$"))
+title(main = "fexpmst", cex.main = 0.8, line = 0.5)
 abline(h=ar_coef, col = "red")
-main = paste0("Fitted $\\phi_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t,R}\\}_{t=1}^{T}$")
-boxplot(fit_r_coef, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{phi_1}$"))
+boxplot(fit_r_coef, names = names, xlab = "T", ylab = TeX("$\\hat{phi_1}$"))
+title(main = "stats", cex.main = 0.8, line = 0.5)
 abline(h=ar_coef, col = "red")
-graph_name = "Figure 2.png"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
-dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
+main = paste0("Fitted $\\phi_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t}\\}_{t=1}^{T}$")
+mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
+
+graph_name = "Figure 3.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+
+
+# Calculate standard deviation for each column
+mean_phi_mse_own <- colMeans((fit_own_coef - ar_coef)^2)
+mean_phi_mse_r <- colMeans((fit_r_coef - ar_coef)^2)
+sd_phi_mse_own <- apply(((fit_own_coef - ar_coef)^2), 2, sd)
+sd_phi_mse_r <- apply(((fit_r_coef - ar_coef)^2), 2, sd)
+
+# Plot mean with error bars for 'fit_own_phi'
+par(mfrow = c(1, 1), mar=c(5,5,3,2)) # mar = c(bottom, left, top, right))
+plot(x = POWER, y = mean_phi_mse_own, col = "blue", type = "o", ylab = TeX("$\\hat{phi}_1$ MSE"), labels = FALSE, xlab = "T", ylim = c(min(mean_phi_mse_own-sd_phi_mse_own),max(mean_phi_mse_own+sd_phi_mse_own)))
+lines(x = POWER, y = mean_phi_mse_r, col = "red", type = "o")
+axis(1, at = POWER, labels = names)
+axis(2)
+abline(h=0,col = "black")
+legend("topright", legend = c("fepxmst", "stats"), col = c("blue", "red"), lty = 1)
+
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = mean_phi_mse_own[i] - sd_phi_mse_own[i], x1 = POWER[i], y1 = mean_phi_mse_own[i] + sd_phi_mse_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_own[i] - sd_phi_mse_own[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_own[i] - sd_phi_mse_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_own[i] + sd_phi_mse_own[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_own[i] + sd_phi_mse_own[i], col = "blue")
+}
+
+# Add error bars for 'fit_r_phi'
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = mean_phi_mse_r[i] - sd_phi_mse_r[i], x1 = POWER[i], y1 = mean_phi_mse_r[i] + sd_phi_mse_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_r[i] - sd_phi_mse_r[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_r[i] - sd_phi_mse_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_r[i] + sd_phi_mse_r[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_r[i] + sd_phi_mse_r[i], col = "red")
+}
+main = paste0("MSE of $\\hat{phi}_1$ with $\\",N_SIMULATIONS," \\ \\{y_{AR(phi_1=",ar_coef,")_t}\\}_{t=1}^{T}$")
+mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
+
+graph_name = "Figure 4.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+dev.off()
+
+################################################################################
+# MSE LAMBDA
+################################################################################
 
 # Fitted AR periodogram
-par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2))
+par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
+boxplot(fit_own_exp, names = names, xlab = "T", ylab = TeX("$\\hat{lambda}_{MLE}$"))
+title(main = "fexpmst", cex.main = 0.8, line = 0.5)
+abline(h=1, col = "red")
+boxplot(fit_r_exp, names = names, xlab = "T", ylab =TeX("$\\hat{lambda}_{MLE}$"))
+title(main = "stats", cex.main = 0.8, line = 0.5)
+abline(h=1, col = "red")
 main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{AR(phi_1=",ar_coef,")_t,own}\\}_{k=1}^{T-1}$")
-boxplot(fit_own_exp, main = TeX(main), names = names, xlab = "T", ylab = TeX("$\\hat{lambda}_{MLE}$"))
-abline(h=1, col = "red")
-main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{AR(phi_1=",ar_coef,")_t,R}\\}_{k=1}^{T-1}$")
-boxplot(fit_r_exp, main = TeX(main), names = names, xlab = "T", ylab =TeX("$\\hat{lambda}_{MLE}$"))
-abline(h=1, col = "red")
-graph_name = "Figure 3.png"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
-dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
+mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
+
+graph_name = "Figure 5.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+
+
+mean_own_exp <- colMeans((fit_own_exp-1)^2)
+mean_r_exp <- colMeans((fit_r_exp-1)^2)
+sd_own_exp <- apply((fit_own_exp-1)^2, 2, sd)
+sd_r_exp <- apply((fit_r_exp-1)^2, 2, sd)
+
+min_lim = min(c((mean_own_exp-sd_own_exp),(mean_r_exp-sd_r_exp)))
+max_lim = max(c((mean_own_exp+sd_own_exp),(mean_r_exp+sd_r_exp)))
+
+# Plot means with error bars
+par(mfrow=c(1,1), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
+plot(x = POWER, y = mean_own_exp, col = "blue", type = "o", ylab = TeX("MSE $\\hat{lambda}$"), xlab = "T", ylim = c(min_lim, max_lim), labels = FALSE)
+lines(x = POWER, y = mean_r_exp, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+
+legend("topright", legend = c("fepxmst", "stats"), col = c("blue", "red"), lty = 1)
+abline(h=1, col = "black")
+
+# Add error bars
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = mean_own_exp[i] - sd_own_exp[i], x1 = POWER[i], y1 = mean_own_exp[i] + sd_own_exp[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_own_exp[i] - sd_own_exp[i], x1 = POWER[i] + 0.1, y1 = mean_own_exp[i] - sd_own_exp[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_own_exp[i] + sd_own_exp[i], x1 = POWER[i] + 0.1, y1 = mean_own_exp[i] + sd_own_exp[i], col = "blue")
+
+  segments(x0 = POWER[i], y0 = mean_r_exp[i] - sd_r_exp[i], x1 = POWER[i], y1 = mean_r_exp[i] + sd_r_exp[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_r_exp[i] - sd_r_exp[i], x1 = POWER[i] + 0.1, y1 = mean_r_exp[i] - sd_r_exp[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = mean_r_exp[i] + sd_r_exp[i], x1 = POWER[i] + 0.1, y1 = mean_r_exp[i] + sd_r_exp[i], col = "red")
+}
+
+main = paste0("MSE of fitted $\\lambda$ for $\\",N_SIMULATIONS," \\ \\{I^*_{AR(phi_1=",ar_coef,")_t}(\\omega_k)\\}_{k=1}^{T-1}$")
+mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
+graph_name = "Figure 6.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+dev.off()
+
+################################################################################
+# GOODNESS OF FIT
+################################################################################
 
 # P value
-par(mfrow=c(1,2), mar = c(4.5, 5, 2, 2))
-main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{AR(phi_1 = ", ar_coef, ")_t,own}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
-boxplot(p_val_own_exp, main = TeX(main), ylab = "p.value", names = names, xlab = "T")
+par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
+boxplot(p_val_own_exp, ylab = "p.value", names = names, xlab = "T")
+title(main = "fexpmst", cex.main = 0.8, line = 0.5)
 abline(h=0.05, col = "red")
-main = paste0(N_SIMULATIONS," $H_0: \\ \\{I(\\omega_k)^*_{AR(phi_1 = ", ar_coef, ")_t,R}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
-boxplot(p_val_r_exp, main = TeX(main), ylab = "p.value", names = names, xlab = "T")
+boxplot(p_val_r_exp, ylab = "p.value", names = names, xlab = "T")
+title(main = "stats", cex.main = 0.8, line = 0.5)
 abline(h=0.05, col = "red")
-graph_name = "Figure 4.png"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
-dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
+main = paste0("$H_0: \\ \\{I(\\omega_k)^*_{AR(phi_1 = ", ar_coef, ")_t}\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
+
+graph_name = "Figure 7.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+dev.off()
+
+################################################################################
+# Last checks
+################################################################################
 
 # Check figures of last simulation
 par(mfrow=c(2,1))
-main = paste0("One realization of $\\{y_{AR(phi_1=",ar_coef,")_t,own}\\}_{t=1}^{",2,"^{",POWER[length(POWER)],"}}$")
-plot(y_own, main = TeX(main), type = "l", ylab = TeX("$y_{own}$"), xlab = "")
+main = paste0("One realization of $\\{y_{AR(phi_1=",ar_coef,")_t}\\}_{t=1}^{",2,"^{",POWER[length(POWER)],"}}$")
+plot(y_own, main = TeX(main), type = "l", ylab = TeX("$y_{fexpmst}$"), xlab = "")
 main = paste0("One realization of $\\{y_{AR(phi_1=",ar_coef,")_t,R}\\}_{t=1}^{",2,"^{",POWER[length(POWER)],"}}$")
-plot(y_r, main = TeX(main), type = "l", ylab = TeX("$y_{R}$"), xlab = "")
-graph_name = "Figure 5.png"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
-dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
+plot(y_r, main = TeX(main), type = "l", ylab = TeX("$y_{stats}$"), xlab = "")
+
+graph_name = "Figure 8.png"
+dev.print(device = png, filename = paste(path,graph_name), width = 1800, height = 1100, res=200)
+dev.off()
 
 # par(mar = c(bottom, left, top, right)
 par(mfrow=c(2,1), mar = c(3, 5, 2, 2))
-main = paste0("One realization of $\\{I(\\omega_k)^*_{AR(\\phi_1 = ", ar_coef, ")_t,own}\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
-plot(yper_own, ylab = TeX("$I(\\omega)$"), main = TeX(main), ylim = c(0,6))
+main = paste0("One realization of $\\{I^*_{AR(\\phi_1 = ", ar_coef, ")_t}(\\omega_k)\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
+plot(yper_own, ylab = TeX("$I(\\omega)_{fexpmst}$"), main = TeX(main), ylim = c(0,6))
 lines(true_spectrum, type = "l", col = "red")
-main = paste0("One realization of $\\{I(\\omega_k)^*_{AR(\\phi_1 = ", ar_coef, ")_t,R}\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
-plot(yper_r, ylab = TeX("$I(\\omega)$"), main = TeX(main), ylim = c(0,6))
+main = paste0("One realization of $\\{I(\\omega_k)^*_{AR(\\phi_1 = ", ar_coef, ")_t}(\\omega_k)\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
+plot(yper_r, ylab = TeX("$I(\\omega)_{stats}$"), main = TeX(main), ylim = c(0,6))
 lines(true_spectrum, type = "l", col = "red")
-graph_name = "Figure 6.png"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/", graph_name)
-dev.print(device = png, filename = path, width = 1800, height = 1100, res=200)
+
+graph_name = "Figure 9.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+dev.off()

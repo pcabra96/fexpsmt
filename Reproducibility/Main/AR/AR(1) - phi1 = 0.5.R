@@ -138,18 +138,19 @@ dev.off()
 
 # Fitted AR coefficient
 par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
-boxplot(fit_own_coef, names = names, xlab = "T", ylab=TeX("$\\hat{",symbol,"_1}$"))
+main = paste0("$\\hat{",symbol,"_1}$")
+boxplot(fit_own_coef, names = names, xlab = "T", ylab=TeX(main))
 title(main = "fexpmst", cex.main = 0.8, line = 0.5)
 abline(h=coef, col = "red")
-boxplot(fit_r_coef, names = names, xlab = "T", ylab = TeX("$\\hat{",symbol,"_1}$"))
+main = paste0("$\\hat{",symbol,"_1}$")
+boxplot(fit_r_coef, names = names, xlab = "T", ylab = TeX(main))
 title(main = "stats", cex.main = 0.8, line = 0.5)
 abline(h=coef, col = "red")
-main = paste0("Fitted $\\",symbol,"_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{",PROCESS,"(",symbol,"_1=",coef,")_t}\\}_{t=1}^{T}$")
+main = paste0("Fitted $",symbol,"_1$ for$\\ ",N_SIMULATIONS," \\ \\{y_{",PROCESS,"(",symbol,"_1=",coef,")_t}\\}_{t=1}^{T}$")
 mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
 
 graph_name = "Figure 3.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
-
 
 # Calculate standard deviation for each column
 mean_phi_mse_own <- colMeans((fit_own_coef - coef)^2)
@@ -159,7 +160,8 @@ sd_phi_mse_r <- apply(((fit_r_coef - coef)^2), 2, sd)
 
 # Plot mean with error bars for 'fit_own_phi'
 par(mfrow = c(1, 1), mar=c(5,5,3,2)) # mar = c(bottom, left, top, right))
-plot(x = POWER, y = mean_phi_mse_own, col = "blue", type = "o", ylab = TeX("$\\hat{",symbol,"}_1$ MSE"), labels = FALSE, xlab = "T", ylim = c(min(mean_phi_mse_own-sd_phi_mse_own),max(mean_phi_mse_own+sd_phi_mse_own)))
+main = paste0("$\\hat{",symbol,"}_1$ MSE")
+plot(x = POWER, y = mean_phi_mse_own, col = "blue", type = "o", ylab = TeX(main), labels = FALSE, xlab = "T", ylim = c(min(mean_phi_mse_own-sd_phi_mse_own),max(mean_phi_mse_own+sd_phi_mse_own)))
 lines(x = POWER, y = mean_phi_mse_r, col = "red", type = "o")
 axis(1, at = POWER, labels = names)
 axis(2)
@@ -170,10 +172,6 @@ for (i in 1:length(POWER)) {
   segments(x0 = POWER[i], y0 = mean_phi_mse_own[i] - sd_phi_mse_own[i], x1 = POWER[i], y1 = mean_phi_mse_own[i] + sd_phi_mse_own[i], col = "blue")
   segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_own[i] - sd_phi_mse_own[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_own[i] - sd_phi_mse_own[i], col = "blue")
   segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_own[i] + sd_phi_mse_own[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_own[i] + sd_phi_mse_own[i], col = "blue")
-}
-
-# Add error bars for 'fit_r_phi'
-for (i in 1:length(POWER)) {
   segments(x0 = POWER[i], y0 = mean_phi_mse_r[i] - sd_phi_mse_r[i], x1 = POWER[i], y1 = mean_phi_mse_r[i] + sd_phi_mse_r[i], col = "red")
   segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_r[i] - sd_phi_mse_r[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_r[i] - sd_phi_mse_r[i], col = "red")
   segments(x0 = POWER[i] - 0.1, y0 = mean_phi_mse_r[i] + sd_phi_mse_r[i], x1 = POWER[i] + 0.1, y1 = mean_phi_mse_r[i] + sd_phi_mse_r[i], col = "red")
@@ -191,10 +189,12 @@ dev.off()
 
 # Fitted AR periodogram
 par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
-boxplot(fit_own_exp, names = names, xlab = "T", ylab = TeX("$\\hat{lambda}_{MLE}$"))
+main = paste0("$\\hat{lambda}_{MLE}$")
+boxplot(fit_own_exp, names = names, xlab = "T", ylab = TeX(main))
 title(main = "fexpmst", cex.main = 0.8, line = 0.5)
 abline(h=1, col = "red")
-boxplot(fit_r_exp, names = names, xlab = "T", ylab =TeX("$\\hat{lambda}_{MLE}$"))
+main = paste0("$\\hat{lambda}_{MLE}$")
+boxplot(fit_r_exp, names = names, xlab = "T", ylab =TeX(main))
 title(main = "stats", cex.main = 0.8, line = 0.5)
 abline(h=1, col = "red")
 main = paste0("Fitted $\\lambda$ for ", N_SIMULATIONS, " $\\{I(\\omega_k)^*_{",PROCESS,"(",symbol,"_1=",coef,")_t,own}\\}_{k=1}^{T-1}$")
@@ -227,7 +227,6 @@ for (i in 1:length(POWER)) {
   segments(x0 = POWER[i], y0 = mean_own_exp[i] - sd_own_exp[i], x1 = POWER[i], y1 = mean_own_exp[i] + sd_own_exp[i], col = "blue")
   segments(x0 = POWER[i] - 0.1, y0 = mean_own_exp[i] - sd_own_exp[i], x1 = POWER[i] + 0.1, y1 = mean_own_exp[i] - sd_own_exp[i], col = "blue")
   segments(x0 = POWER[i] - 0.1, y0 = mean_own_exp[i] + sd_own_exp[i], x1 = POWER[i] + 0.1, y1 = mean_own_exp[i] + sd_own_exp[i], col = "blue")
-
   segments(x0 = POWER[i], y0 = mean_r_exp[i] - sd_r_exp[i], x1 = POWER[i], y1 = mean_r_exp[i] + sd_r_exp[i], col = "red")
   segments(x0 = POWER[i] - 0.1, y0 = mean_r_exp[i] - sd_r_exp[i], x1 = POWER[i] + 0.1, y1 = mean_r_exp[i] - sd_r_exp[i], col = "red")
   segments(x0 = POWER[i] - 0.1, y0 = mean_r_exp[i] + sd_r_exp[i], x1 = POWER[i] + 0.1, y1 = mean_r_exp[i] + sd_r_exp[i], col = "red")
@@ -275,10 +274,10 @@ dev.off()
 
 # par(mar = c(bottom, left, top, right)
 par(mfrow=c(2,1), mar = c(3, 5, 2, 2))
-main = paste0("One realization of $\\{I^*_{",PROCESS,"(\\",symbol,"_1 = ", coef, ")_t}(\\omega_k)\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
+main = paste0("One realization of $\\{I^*_{",PROCESS,"(",symbol,"_1 = ", coef, ")_t}(\\omega_k)\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
 plot(yper_own, ylab = TeX("$I(\\omega)_{fexpmst}$"), main = TeX(main), ylim = c(0,6))
 lines(true_spectrum, type = "l", col = "red")
-main = paste0("One realization of $\\{I(\\omega_k)^*_{",PROCESS,"(\\",symbol,"_1 = ", coef, ")_t}(\\omega_k)\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
+main = paste0("One realization of $\\{I(\\omega_k)^*_{",PROCESS,"(",symbol,"_1 = ", coef, ")_t}(\\omega_k)\\}_{k=1}^{",2,"^{",POWER[length(POWER)],"}-1}$")
 plot(yper_r, ylab = TeX("$I(\\omega)_{stats}$"), main = TeX(main), ylim = c(0,6))
 lines(true_spectrum, type = "l", col = "red")
 

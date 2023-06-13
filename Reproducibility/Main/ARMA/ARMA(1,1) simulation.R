@@ -59,6 +59,7 @@ for (sim in 1:N_SIMULATIONS) {
     ar_coef = ar_coef_vec[sim]
     ma_coef = ma_coef_vec[sim]
     if(0.05268817>abs(ma_coef+ar_coef)){
+      ma_coef_vec[sim] = -ma_coef
       ma_coef = -ma_coef
     }
     true_spectrum = farima.spectrum(ar = ar_coef,ma= ma_coef, n.freq = T)
@@ -118,6 +119,13 @@ for (sim in 1:N_SIMULATIONS) {
 }
 
 ################################################################################
+# SAVE AR and MA parameteres
+################################################################################
+
+saveRDS(ar_coef_vec, file = paste0(path,"ar_coef_vec.RData"))
+saveRDS(ma_coef_vec, file = paste0(path,"ma_coef_vec.RData"))
+
+################################################################################
 # Running time
 ################################################################################
 
@@ -168,3 +176,5 @@ colnames(p_val_r_exp) = POWER
 
 saveRDS(p_val_own_exp, file = paste0(path,"p.val_own.RData"))
 saveRDS(p_val_r_exp, file = paste0(path,"p.val_r.RData"))
+
+

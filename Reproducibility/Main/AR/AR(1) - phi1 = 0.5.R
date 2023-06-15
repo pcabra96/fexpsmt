@@ -118,7 +118,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height
 dev.off()
 
 # Run time AR coefficient one graph
-par(mfrow=c(1,1))
+par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
 plot(x = POWER, y = colMeans(time_own), col = "blue", type = "o", ylim=c(lim_inf,lim_sup/2), ylab = "time (s)", labels = FALSE, xlab = "T")
 lines(x = POWER, y = colMeans(time_r), col = "red", type = "o")
 axis(1, at=POWER, labels = names)

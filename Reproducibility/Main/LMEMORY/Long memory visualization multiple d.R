@@ -56,87 +56,170 @@ path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility
 # Running time
 ################################################################################
 
-# DATA
+# DATA LISTS
 own_times_farima_list = readRDS(file = paste0(path,"own_times_farima_list.RData"))
 own_times_fexp_list = readRDS(file = paste0(path,"own_times_fexp_list.RData"))
 r_times_list = readRDS(file = paste0(path,"r_times_list.RData"))
 
-# AXIS NAMES FOR LATEX
-rownames(time_own_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(time_own_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(time_r_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(time_r_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+# DATA MATRICES
+own_times_farima_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+own_times_fexp_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+r_times_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
 
-comparison_matrix = as.matrix(time_own_matrix<=time_r_matrix)
+for (wich_d in 1:length(d_coef_vec)) {
+  own_times_farima_matrix[wich_d,] = colMeans(own_times_farima_list[[wich_d]])
+  own_times_fexp_matrix[wich_d,] = colMeans(own_times_fexp_list[[wich_d]])
+  r_times_matrix[wich_d,] = colMeans(r_times_list[[wich_d]])
+}
+
+r_times_matrix>own_times_fexp_matrix
+
+# AXIS NAMES FOR LATEX
+rownames(own_times_farima_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_times_farima_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+rownames(own_times_fexp_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_times_fexp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+rownames(r_times_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(r_times_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+comparison_matrix = as.matrix(own_times_farima_matrix<=r_times_matrix)
 
 # LATEX OUTPUT
-time_own_matrix = xtable(time_own_matrix, digits = 5)
-time_r_matrix = xtable(time_r_matrix, digits = 5)
-print(time_own_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(time_own_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(time_r_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(time_r_matrix)), sanitize.text.function = function(x) {x})
+own_times_farima_matrix = xtable(own_times_farima_matrix, digits = 5)
+own_times_fexp_matrix = xtable(own_times_fexp_matrix, digits = 5)
+r_times_matrix = xtable(r_times_matrix, digits = 5)
+
+print(own_times_farima_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_times_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(own_times_fexp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_times_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(r_times_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_times_farima_matrix)), sanitize.text.function = function(x) {x})
 
 ################################################################################
 # MSE COEFFICIENTS for phi
 ################################################################################
 
 # DATA
-fit_own_coef_matrix = readRDS(file = paste0(path,"theta_1_own.RData"))
-fit_r_coef_matrix = readRDS(file = paste0(path,"theta_1_r.RData"))
+own_long_param_farima_list = readRDS(file = paste0(path,"own_long_param_farima_list.RData"))
+own_long_param_fexp_list = readRDS(file = paste0(path,"own_long_param_fexp_list.RData"))
+r_long_param_list = readRDS(file = paste0(path,"r_long_param_list.RData"))
+
+# DATA MATRICES
+own_long_param_farima_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+own_long_param_fexp_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+r_long_param_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+
+for (wich_d in 1:length(d_coef_vec)) {
+  own_long_param_farima_matrix[wich_d,] = colMeans( (own_long_param_farima_list[[wich_d]]-d_coef_vec[wich_d])^2 )
+  own_long_param_fexp_matrix[wich_d,] = colMeans((own_long_param_fexp_list[[wich_d]]-d_coef_vec[wich_d])^2)
+  r_long_param_matrix[wich_d,] = colMeans((r_long_param_list[[wich_d]]-d_coef_vec[wich_d])^2)
+}
 
 # AXIS NAMES FOR LATEX
-rownames(fit_own_coef_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_own_coef_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(fit_r_coef_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_r_coef_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+rownames(own_long_param_farima_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_long_param_farima_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
 
-comparison_matrix = as.matrix(fit_own_coef_matrix<=fit_r_coef_matrix)
+rownames(own_long_param_fexp_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_long_param_fexp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+rownames(r_long_param_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(r_long_param_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+comparison_matrix_1 = as.matrix(own_long_param_farima_matrix<=r_long_param_matrix)
+comparison_matrix_1 = as.matrix(own_long_param_fexp_matrix<=r_long_param_matrix)
 
 # LATEX OUTPUT
-fit_own_coef_matrix = xtable(fit_own_coef_matrix, digits = 5)
-fit_r_coef_matrix = xtable(fit_r_coef_matrix, digits = 5)
-print(fit_own_coef_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_own_coef_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(fit_r_coef_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_r_coef_matrix)), sanitize.text.function = function(x) {x})
+own_long_param_farima_matrix = xtable(own_long_param_farima_matrix, digits = 5)
+own_long_param_fexp_matrix = xtable(own_long_param_fexp_matrix, digits = 5)
+r_long_param_matrix = xtable(r_long_param_matrix, digits = 5)
+
+print(own_long_param_farima_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(own_long_param_fexp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(r_long_param_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x})
 
 ################################################################################
 # MSE COEFFICIENTS for lambda=1
 ################################################################################
 
 # DATA
-fit_own_exp_matrix = readRDS(file = paste0(path,"lambda_own.RData"))
-fit_r_exp_matrix = readRDS(file = paste0(path,"lambda_r.RData"))
+own_lambda_farima_list = readRDS(file = paste0(path,"own_lambda_farima_list.RData"))
+own_lambda_fexp_list = readRDS(file = paste0(path,"own_lambda_fexp_list.RData"))
+r_lambda_list = readRDS(file = paste0(path,"r_lambda_list.RData"))
+
+# DATA MATRICES
+own_lambda_farima_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+own_lambda_fexp_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+r_lambda_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+
+for (wich_d in 1:length(d_coef_vec)) {
+  own_lambda_farima_matrix[wich_d,] = colMeans( (own_lambda_farima_list[[wich_d]]-1)^2 )
+  own_lambda_fexp_matrix[wich_d,] = colMeans((own_lambda_fexp_list[[wich_d]]-1)^2)
+  r_lambda_matrix[wich_d,] = colMeans((r_lambda_list[[wich_d]]-1)^2)
+}
 
 # AXIS NAMES FOR LATEX
-rownames(fit_own_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_own_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(fit_r_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_r_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+rownames(own_lambda_farima_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_lambda_farima_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
 
-comparison_matrix = as.matrix(fit_own_exp_matrix<=fit_r_exp_matrix)
+rownames(own_lambda_fexp_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_lambda_fexp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+rownames(r_lambda_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(r_lambda_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+comparison_matrix_1 = as.matrix(own_lambda_farima_matrix<=r_lambda_matrix)
+comparison_matrix_2 = as.matrix(own_lambda_fexp_matrix<=r_lambda_matrix)
 
 # LATEX OUTPUT
-fit_own_exp_matrix = xtable(fit_own_exp_matrix, digits = 5)
-fit_r_exp_matrix = xtable(fit_r_exp_matrix, digits = 5)
-print(fit_own_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_own_exp_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(fit_r_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_r_exp_matrix)), sanitize.text.function = function(x) {x})
+own_lambda_farima_matrix = xtable(own_lambda_farima_matrix, digits = 5)
+own_lambda_fexp_matrix = xtable(own_lambda_fexp_matrix, digits = 5)
+r_lambda_matrix = xtable(r_lambda_matrix, digits = 5)
+
+print(own_lambda_farima_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(own_lambda_fexp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(r_lambda_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x})
 
 ################################################################################
 # Correct p-values for EXP(1)
 ################################################################################
 
 # DATA
-p_val_own_exp_matrix = readRDS(file = paste0(path,"p.val_own.RData"))
-p_val_r_exp_matrix = readRDS(file = paste0(path,"p.val_R.RData"))
+own_exp_1_farima_list = readRDS(file = paste0(path,"own_exp_1_farima_list.RData"))
+own_exp_1_fexp_list = readRDS(file = paste0(path,"own_exp_1_fexp_list.RData"))
+r_exp_1_list = readRDS(file = paste0(path,"r_exp_1_list.RData"))
+
+# DATA MATRICES
+own_exp_1_farima_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+own_exp_1_fexp_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+r_exp_1_matrix = matrix(0,nrow = length(d_coef_vec), ncol = length(POWER))
+
+for (i in 1:length(d_coef_vec)) {
+  own_exp_1_farima_matrix[i,] = colMeans(own_exp_1_farima_list[[i]]>=0.05)
+  own_exp_1_fexp_matrix[i,] = colMeans(own_exp_1_fexp_list[[i]]>=0.05)
+  r_exp_1_matrix[i,] = colMeans(r_exp_1_list[[i]]>=0.05)
+}
 
 # AXIS NAMES FOR LATEX
-rownames(p_val_own_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(p_val_own_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(p_val_r_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(p_val_r_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+rownames(own_exp_1_farima_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_exp_1_farima_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
 
-comparison_matrix = as.matrix(p_val_own_exp_matrix<p_val_r_exp_matrix)
+rownames(own_exp_1_fexp_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(own_exp_1_fexp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+rownames(r_exp_1_matrix) = paste0("$\\mathbf{",d_coef_vec,"}$")
+colnames(r_exp_1_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+
+comparison_matrix_1 = as.matrix(own_exp_1_farima_matrix>=r_exp_1_matrix)
+comparison_matrix_2 = as.matrix(own_exp_1_fexp_matrix>=r_exp_1_matrix)
+
+plot(comparison_matrix_1)
+plot(comparison_matrix_2)
 
 # LATEX OUTPUT
-p_val_own_exp_matrix = xtable(p_val_own_exp_matrix, digits = 5)
-p_val_r_exp_matrix = xtable(p_val_r_exp_matrix, digits = 5)
-print(p_val_own_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(p_val_own_exp_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(p_val_r_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(p_val_r_exp_matrix)), sanitize.text.function = function(x) {x})
+own_exp_1_farima_matrix = xtable(own_exp_1_farima_matrix, digits = 5)
+own_exp_1_fexp_matrix = xtable(own_exp_1_fexp_matrix, digits = 5)
+r_exp_1_matrix = xtable(r_exp_1_matrix, digits = 5)
+
+print(own_exp_1_farima_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(own_exp_1_fexp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
+print(r_exp_1_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_long_param_farima_matrix)), sanitize.text.function = function(x) {x})

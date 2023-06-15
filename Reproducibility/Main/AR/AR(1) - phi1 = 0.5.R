@@ -1,5 +1,23 @@
 ################################################################################
-# PACKAGES
+##----------------------------------------------------------------------------##
+## INDEX                                                                      ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+# 1. PACKAGES
+# 2. SEED
+# 3. SIMULATION PARAMETERS
+# 4. SIMULATION
+# 5. RESULTS
+# 5.1. TIME
+# 5.2. TIME DOMAIN PARAMETER
+# 5.3. FREQUENCY DOMAIN PARAMETER
+# 5.4. FREQUENCY DOMAIN GOODNESS OF FIT
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 1. PACKAGES                                                                ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 library(forecast)
@@ -7,13 +25,17 @@ require(MASS)
 library(latex2exp)
 
 ################################################################################
-# SEED
+##----------------------------------------------------------------------------##
+## 2. SEED                                                                    ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 set.seed(1)
 
 ################################################################################
-# PARAMETERS
+##----------------------------------------------------------------------------##
+## 3. SIMULATION PARAMETERS                                                   ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 PROCESS = "AR"
@@ -23,7 +45,9 @@ POWER = 7:14
 names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
 
 ################################################################################
-# SIMULATION
+##----------------------------------------------------------------------------##
+## 4. SIMULATION                                                              ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 N_SIMULATIONS = 1000
@@ -91,20 +115,26 @@ for (j in 1:length(POWER)) {
 }
 
 ################################################################################
-# VISUALIZE RESULTS
+##----------------------------------------------------------------------------##
+## 5. RESULTS                                                                 ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/",PROCESS,"/")
 
 ################################################################################
-# Running time
+# 5.1. TIME
 ################################################################################
+
+#--------------------------------------------
+# 5.1.1 TIME BOXPLOTS
+#--------------------------------------------
 
 # Limits
 lim_inf = min(c(time_own,time_r))
 lim_sup = max(c(time_own,time_r))
 
-# Run time AR coefficient two boxplots
+#Boxplots
 par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
 boxplot(time_own, ylim=c(0,0.02), names = names, ylab = "time (s)", xlab = "T")
 title(main = "fexpmst", cex.main = 0.8, line = 0.5)
@@ -117,7 +147,10 @@ graph_name = "Figure 1.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
 dev.off()
 
-# Run time AR coefficient one graph
+#--------------------------------------------
+# 5.1.2 TIME AVERAGES
+#--------------------------------------------
+
 par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
 plot(x = POWER, y = colMeans(time_own), col = "blue", type = "o", ylim=c(lim_inf,lim_sup/2), ylab = "time (s)", labels = FALSE, xlab = "T")
 lines(x = POWER, y = colMeans(time_r), col = "red", type = "o")
@@ -132,10 +165,13 @@ dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height
 dev.off()
 
 ################################################################################
-# MSE COEFFICIENTS for phi
+# 5.2. TIME DOMAIN PARAMETER
 ################################################################################
 
-# Fitted AR coefficient
+#--------------------------------------------
+# 5.2.1 TIME DOMAIN COEFFICIENTS BOXPLOTS
+#--------------------------------------------
+
 par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
 main = paste0("$\\hat{",symbol,"_1}$")
 boxplot(fit_own_coef, names = names, xlab = "T", ylab=TeX(main))
@@ -150,6 +186,10 @@ mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.5, font = 2)
 
 graph_name = "Figure 3.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
+
+#--------------------------------------------
+# 5.2.2 COEFFICIENTS AVERAGES AND DISPERSION
+#--------------------------------------------
 
 # Calculate standard deviation for each column
 mean_phi_mse_own <- colMeans((fit_own_coef - coef)^2)
@@ -183,10 +223,13 @@ dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height
 dev.off()
 
 ################################################################################
-# MSE LAMBDA
+# 5.3. FREQUENCY DOMAIN PARAMETER
 ################################################################################
 
-# Fitted AR periodogram
+#--------------------------------------------
+# 5.3.1 FREQUENCY DOMAIN COEFFICIENTS BOXPLOTS
+#--------------------------------------------
+
 par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
 main = paste0("$\\hat{lambda}_{MLE}$")
 boxplot(fit_own_exp, names = names, xlab = "T", ylab = TeX(main))
@@ -202,6 +245,9 @@ mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.5, font = 2)
 graph_name = "Figure 5.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
 
+#--------------------------------------------
+# 5.3.2 FREQUENCY DOMAIN COEFFICIENTS BOXPLOTS
+#--------------------------------------------
 
 mean_own_exp <- colMeans((fit_own_exp-1)^2)
 mean_r_exp <- colMeans((fit_r_exp-1)^2)
@@ -238,10 +284,13 @@ dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height
 dev.off()
 
 ################################################################################
-# GOODNESS OF FIT
+# 5.4. FREQUENCY DOMAIN GOODNESS OF FIT
 ################################################################################
 
-# P value
+#--------------------------------------------
+# 5.4.1 GOODNESS OF FIT BOXPLOTS
+#--------------------------------------------
+
 par(mfrow=c(1,2), mar=c(5,5,4,2)) # mar = c(bottom, left, top, right))
 boxplot(p_val_own_exp, ylab = "p.value", names = names, xlab = "T")
 title(main = "fexpmst", cex.main = 0.8, line = 0.5)

@@ -194,7 +194,7 @@ for (i in 1:length(POWER)) {
 }
 main = paste0("MSE of $\\hat{d}$ with $\\",N_SIMULATIONS," \\ \\{y_{",PROCESS,"(phi_1,theta_1 \\ \\sim \\ u(\\[-0.9,0.9\\]),\\ d \\ \\sim \\ u(\\[0,0.5\\])_t}\\}_{t=1}^{T}$")
 mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
-graph_name = "Figure 4.png"
+graph_name = "Figure 5.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
 dev.off()
 
@@ -218,7 +218,7 @@ title(main = "farima", cex.main = 0.8, line = 0.5)
 main = paste0("Fitted $\\lambda$ for $\\",N_SIMULATIONS," \\ \\{I^*_{",PROCESS,"(phi_1,theta_1 \\ \\sim \\ u(\\[-0.9,0.9\\]),\\ d \\ \\sim \\ u(\\[0,0.5\\])}(\\omega_k)_t\\}_{k=1}^{T-1}$")
 mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
 
-graph_name = "Figure 5.png"
+graph_name = "Figure 6.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
 dev.off()
 
@@ -253,7 +253,7 @@ for (i in 1:length(POWER)) {
 
 main = paste0("Fitted $\\lambda$ for $\\",N_SIMULATIONS," \\ \\{I^*_{",PROCESS,"(phi_1,theta_1 \\ \\sim \\ u(\\[-0.9,0.9\\]),\\ d \\ \\sim \\ u(\\[0,0.5\\])}(\\omega_k)_t\\}_{k=1}^{T-1}$")
 mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
-graph_name = "Figure 6.png"
+graph_name = "Figure 7.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
 dev.off()
 
@@ -282,7 +282,7 @@ title(main = "farima", cex.main = 0.8, line = 0.5)
 main = paste0("$H_0: \\ \\{I^*_{",PROCESS,"(phi_1,theta_1 \\ \\sim \\ u(\\[-0.9,0.9\\]),\\ d \\ \\sim \\ u(\\[0,0.5\\])}(\\omega_k)_t\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
 mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.2, font = 2)
 
-graph_name = "Figure 7.png"
+graph_name = "Figure 8.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
 dev.off()
 

@@ -17,7 +17,7 @@ set.seed(0)
 
 PROCESS = "FARIMA"
 POWER = 7:14
-N_SIMULATIONS = 10
+N_SIMULATIONS = 20
 ar_coef_vec = runif(N_SIMULATIONS, min = -0.9, max = 0.9)
 ma_coef_vec = runif(N_SIMULATIONS, min = -0.9, max = 0.9)
 d_coef_vec = runif(N_SIMULATIONS, min = 0, max = 0.5)

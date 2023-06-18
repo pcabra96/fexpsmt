@@ -12,6 +12,7 @@ y = sim.farima(ar = pol_coef, T = 2^12)
 
 plot(y[1:2^11], type = "l")
 
+par(mfrow=c(1,1))
 acf(y, lag.max = length(y)-1)
 
 ifelse(runif(1)>=0.5,1,-1)

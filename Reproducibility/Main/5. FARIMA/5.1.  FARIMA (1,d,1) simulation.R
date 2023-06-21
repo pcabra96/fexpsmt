@@ -2,6 +2,7 @@
 # PACKAGES
 ################################################################################
 
+library(fracdiff)
 library(forecast)
 require(MASS)
 
@@ -28,7 +29,7 @@ names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$
 # Save data
 ################################################################################
 
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/",PROCESS,"/")
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/5. ",PROCESS,"/")
 
 # TIME
 time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -57,16 +58,28 @@ p_val_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 ################################################################################
 # SIMULATION
 ################################################################################
-for (sim in 1:N_SIMULATIONS) {if(abs(ma_coef_vec[sim]+ar_coef_vec[sim])<=0.1){ma_coef_vec[sim] = -ma_coef_vec[sim]}}
+
+for (sim in 1:N_SIMULATIONS) {
+  if(abs(ma_coef_vec[sim]+ar_coef_vec[sim])<0.1){
+    if (abs(ar_coef_vec[sim])<0.1 ){
+      ma_coef_vec[sim] = runif(1, min = 0.2, max = 0.9)
+    }
+    else{
+      ma_coef_vec[sim] = ar_coef_vec[sim]
+    }
+  }
+}
 
 start = Sys.time()
 for (sim in 1:N_SIMULATIONS) {
   for (j in 1:length(POWER)) {
     T = 2^(POWER[j])
+
     ar_coef = ar_coef_vec[sim]
     ma_coef = ma_coef_vec[sim]
     d_coef = d_coef_vec[sim]
     true_spectrum = farima.spectrum(ar = ar_coef,ma= ma_coef, d = d_coef, n.freq = T)
+    true_spectrum[1] = true_spectrum[length(true_spectrum)]
 
     # ARMA(1,1) OWN simulations
     start_own = Sys.time()
@@ -84,14 +97,14 @@ for (sim in 1:N_SIMULATIONS) {
     # FITTING
     ################################################################################
 
-    a = fit.farima(y_own, p = 1,q = 1, d = 1)
+    a = fracdiff(x = y_own,nar = 1, nma = 1)
     fit_own_phi[sim,j] = a[["ar"]]
-    fit_own_theta[sim,j] = a[["ma"]]
+    fit_own_theta[sim,j] = -a[["ma"]]
     fit_own_d[sim,j] = a[["d"]]
 
-    a = fit.farima(y_r, p = 1, q = 1, d = 1)
+    a = fracdiff(x = y_r,nar = 1, nma = 1)
     fit_r_phi[sim,j] = a[["ar"]]
-    fit_r_theta[sim,j] = a[["ma"]]
+    fit_r_theta[sim,j] = -a[["ma"]]
     fit_r_d[sim,j] = a[["d"]]
 
     ################################################################################
@@ -122,15 +135,21 @@ for (sim in 1:N_SIMULATIONS) {
     fit_r_exp[sim,j] <- fitdistr(I_r, "exponential")[["estimate"]]
     p_val_r_exp[sim,j] = ks.test(I_r, "pexp", 1)[["p.value"]]
   }
+
+  if ((sim %% 10) == 0) {
+    print(sim)
+  }
 }
+
 end = Sys.time()
 total_time = end-start
 print(total_time)
+
 ################################################################################
 # SAVE AR and MA parameteres
 ################################################################################
 
-saveRDS(ar_coef_vec, file = paste0(path,"ar_coef_vec.RData"))
+'saveRDS(ar_coef_vec, file = paste0(path,"ar_coef_vec.RData"))
 saveRDS(ma_coef_vec, file = paste0(path,"ma_coef_vec.RData"))
 saveRDS(d_coef_vec, file = paste0(path,"d_coef_vec.RData"))
 
@@ -195,3 +214,4 @@ colnames(p_val_r_exp) = POWER
 
 saveRDS(p_val_own_exp, file = paste0(path,"p.val_own.RData"))
 saveRDS(p_val_r_exp, file = paste0(path,"p.val_r.RData"))
+'

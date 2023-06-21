@@ -1,0 +1,592 @@
+################################################################################
+##----------------------------------------------------------------------------##
+## INDEX                                                                      ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+# 1. PACKAGES
+# 2. SEED
+# 3. SIMULATION PARAMETERS
+# 4. VISUALIZATION PATH
+# 5. VISUALIZATION
+# 5.1. TIME
+# 5.1. AVERAGE
+# 5.3. MSE COEFFICIENTS FOR AR COEFFICIENT (TIME DOMAIN)
+# 5.4. MSE COEFFICIENTS FOR MA COEFFICIENT (TIME DOMAIN)
+# 5.5. MSE COEFFICIENt FOR LAMBDA COEFFICIENT (FREQUENCY DOMAIN)
+# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT (FREQUENCY DOMAIN)
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 1. PACKAGES                                                                ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+library(latex2exp)
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 2. SEED                                                                    ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+set.seed(0)
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 3. SIMULATION PARAMETERS                                                   ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+# TO TOUCH
+PROCESS = "ARMA"
+SUB_PROCESS = "fixed"
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/3. ",PROCESS,"/",SUB_PROCESS,"/")
+ar_coef_vec = 0.4 #readRDS(file = paste0(path,"ar_coef_vec.RData"))
+ma_coef_vec = 0.6 #readRDS(file = paste0(path,"ma_coef_vec.RData"))
+
+# DO NOT TOUCH
+names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
+POWER = 7:14
+N_SIMULATIONS = 1000
+
+if (length(ar_coef_vec)==1) {
+  process_string = paste0(PROCESS,"(phi_1=",ar_coef_vec,", theta_1=",ma_coef_vec,")")
+}else{
+  process_string = paste0(PROCESS,"(phi_1,theta_1 \\sim u(\\[-0.9,0.9\\]))")
+}
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 4. VISUALIZATION PARAMETERS                                                ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+lab_size = 1.5
+subtitle_size = 2
+tite_size = 2.5
+legend_size = 2
+width_graphs = 1100
+height_graphs = 550
+axis_text = 1.5
+resolution_graph = 100
+graph_1 = "fepxmst"
+graph_2 = "stats"
+legend = c(graph_1, graph_2)
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 5. VISUALIZATION                                                           ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+################################################################################
+# 5.1. TIME
+################################################################################
+
+# LOAD THE DATA
+time_own = readRDS(file = paste0(path,"time_own.RData"))
+time_r = readRDS(file = paste0(path,"time_R.RData"))
+
+#-------------------------------
+# 5.1.1. BOXPLOT
+#-------------------------------
+
+# PARAMETERS
+ylab = "time (s)"
+xlab = "T"
+main = paste0("Simulation time for $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+y_1 = time_own
+y_2 = time_r
+abline_value = 0
+abline_col = ""
+
+# LIMITS
+lim_inf = min(y_1,y_2)
+lim_sup = max(y_1,y_2)
+
+# DISPLAY
+par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_1, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_2, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# SAVE THE GRAPH
+graph_name = "Figure 1.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()
+
+#-------------------------------
+# 5.1.2. LINES
+#-------------------------------
+
+# PARAMETERS
+ylab = "time (s)"
+xlab = "T"
+main = paste0("Average running time for $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+y_1 = colMeans(time_own)
+y_2 = colMeans(time_r)
+abline_value = 0
+abline_col = ""
+
+# LIMITS
+lim_inf = min(y_1,y_2)
+lim_sup = max(y_1,y_2)
+
+# DISPLAY
+par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+lines(x = POWER, y = y_2, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# SAVE THE GRAPH
+graph_name = "Figure 2.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs, res = resolution_graph)
+dev.off()
+
+################################################################################
+# 5.2. Time Series average
+################################################################################
+
+# LOAD THE DATA
+average_own <- readRDS(file = paste0(path, "average_own.RData"))
+average_r <- readRDS(file = paste0(path, "average_r.RData"))
+
+#-------------------------------
+# 5.2.1. BOXPLOT
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("$\\hat{mu}$")
+xlab = "T"
+main = paste0("Fitted $\\mu$ of $\\",N_SIMULATIONS," \\ \\y_{",process_string,"_t}\\}_{t=1}^{T}$")
+y_1 = average_own
+y_2 = average_r
+abline_value = 0
+abline_col = "red"
+
+# LIMITS
+lim_inf = min(y_1,y_2)
+lim_sup = max(y_1,y_2)
+
+# DISPLAY
+par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_1, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+legend("bottomright", legend= TeX("True $\\mu$"),col = "red", lty=1:2, cex=0.8, bty="n")
+boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_2, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+legend("bottomright", legend= TeX("True $\\mu$"),col = "red", lty=1:2, cex=0.8, bty="n")
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# SAVE THE GRAPH
+graph_name = "Figure 3.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs, res = resolution_graph)
+dev.off()
+
+#-------------------------------
+# 5.2.2. LINES
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("$\\hat{mu}$")
+xlab = "T"
+main = paste0("MSE of $\\hat{mu}$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+true_param = 0
+own_param = average_own
+r_param = average_r
+abline_value = 0
+abline_col = "black"
+
+# MSE
+y_1 = colMeans((own_param - true_param)^2)
+y_2 = colMeans((r_param - true_param)^2)
+
+# STANDARD DEVIATION OF SQUARED ERROR
+sd_own <- apply(((own_param - true_param)^2), 2, sd)
+sd_r <- apply(((r_param - true_param)^2), 2, sd)
+
+# LIMITS
+lim_inf = min(y_1 - sd_own, y_2 - sd_r)
+lim_sup = max(y_1 + sd_own, y_2 + sd_r)
+
+# DISPLAY
+par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+lines(x = POWER, y = y_2, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+abline(h=abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+
+# PLOT STANDARD DEVIATION
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = y_1[i] - sd_own[i], x1 = POWER[i], y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] - sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] - sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] + sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i], y0 = y_2[i] - sd_r[i], x1 = POWER[i], y1 = y_2[i] + sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] - sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] - sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] + sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] + sd_r[i], col = "red")
+}
+
+# SAVE THE GRAPH
+graph_name = "Figure 4.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()
+
+################################################################################
+# 5.3. MSE COEFFICIENTS FOR AR COEFFICIENT
+################################################################################
+
+# LOAD THE DATA
+fit_own_phi <- readRDS(file = paste0(path, "phi_1_own.RData"))
+fit_r_phi <- readRDS(file = paste0(path, "phi_1_r.RData"))
+
+#-------------------------------
+# 5.3.1. BOXPLOT
+#-------------------------------
+
+if (length(ar_coef_vec)==1) {
+  # PARAMETERS
+  ylab = TeX("$\\hat{phi}_{1,\\ Whittle}$")
+  xlab = "T"
+  main = paste0("Fitted $\\phi_1$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+  y_1 = fit_own_phi
+  y_2 = fit_r_phi
+  abline_value = ar_coef_vec
+  abline_col = "red"
+
+  # LIMITS
+  lim_inf = min(y_1,y_2)
+  lim_sup = max(y_1,y_2)
+
+  # DISPLAY
+  par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+
+  # PLOT
+  boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+  title(main = graph_1, cex.main = subtitle_size, line = 0.5)
+  abline(h = abline_value, col = abline_col)
+  legend("bottomright", legend= TeX("True $\\phi_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+  title(main = graph_2, cex.main = subtitle_size, line = 0.5)
+  abline(h = abline_value, col = abline_col)
+  legend("bottomright", legend= TeX("True $\\phi_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+  # SAVE THE GRAPH
+  graph_name = "Figure 5.png"
+  dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs, res = resolution_graph)
+  dev.off()
+
+}
+
+#-------------------------------
+# 5.3.2. LINES
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("$\\hat{phi}_{1,\\ Whittle}$ MSE")
+xlab = "T"
+main = paste0("MSE of $\\hat{phi}_1$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+true_param = ar_coef_vec
+own_param = fit_own_phi
+r_param = fit_r_phi
+abline_value = 0
+abline_col = "black"
+
+# MSE
+y_1 = colMeans((own_param - true_param)^2)
+y_2 = colMeans((r_param - true_param)^2)
+
+# STANDARD DEVIATION OF SQUARED ERROR
+sd_own <- apply(((own_param - true_param)^2), 2, sd)
+sd_r <- apply(((r_param - true_param)^2), 2, sd)
+
+# LIMITS
+lim_inf = min(y_1 - sd_own, y_2 - sd_r)
+lim_sup = max(y_1 + sd_own, y_2 + sd_r)
+
+# DISPLAY
+par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+lines(x = POWER, y = y_2, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+abline(h=abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+
+# PLOT STANDARD DEVIATION
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = y_1[i] - sd_own[i], x1 = POWER[i], y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] - sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] - sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] + sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i], y0 = y_2[i] - sd_r[i], x1 = POWER[i], y1 = y_2[i] + sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] - sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] - sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] + sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] + sd_r[i], col = "red")
+}
+
+# SAVE THE GRAPH
+graph_name = "Figure 6.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()
+
+################################################################################
+# 5.4. MSE COEFFICIENTS FOR MA COEFFICIENT
+################################################################################
+
+# LOAD THE DATA
+fit_own_theta = readRDS(file = paste0(path,"theta_1_own.RData"))
+fit_r_theta = readRDS(file = paste0(path,"theta_1_r.RData"))
+
+#-------------------------------
+# 5.4.1. BOXPLOT
+#-------------------------------
+if (length(ma_coef_vec)==1) {
+  # PARAMETERS
+  ylab = TeX("$\\hat{theta}_{1,\\ Whittle}$")
+  xlab = "T"
+  main = paste0("Fitted $\\theta_1$ with $\\",N_SIMULATIONS," \\ \\{y_{ARMA(phi_1=",ar_coef_vec,",theta_1 = ",ma_coef_vec,")_t}\\}_{t=1}^{T}$")
+  y_1 = fit_own_theta
+  y_2 = fit_r_theta
+  abline_value = ma_coef_vec
+  abline_col = "red"
+
+  # LIMITS
+  lim_inf = min(y_1,y_2)
+  lim_sup = max(y_1,y_2)
+
+  # DISPLAY
+  par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+
+  # PLOT
+  boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+  title(main = graph_1, cex.main = subtitle_size, line = 0.5)
+  abline(h = abline_value, col = abline_col)
+  legend("bottomright", legend= TeX("True $\\theta_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+  title(main = graph_2, cex.main = subtitle_size, line = 0.5)
+  abline(h = abline_value, col = abline_col)
+  legend("bottomright", legend= TeX("True $\\theta_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+  # SAVE THE GRAPH
+  graph_name = "Figure 7.png"
+  dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+  dev.off()
+}
+
+#-------------------------------
+# 5.4.2. LINES
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("$\\hat{theta}_{1,\\ Whittle}$ $MSE")
+xlab = "T"
+main = paste0("MSE of $\\hat{theta}_1$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+true_param = ma_coef_vec
+own_param = fit_own_theta
+r_param = fit_r_theta
+abline_value = 0
+abline_col = "black"
+
+# MSE
+y_1 = colMeans((own_param - true_param)^2)
+y_2 = colMeans((r_param - true_param)^2)
+
+# STANDARD DEVIATION OF SQUARED ERROR
+sd_own <- apply(((own_param - true_param)^2), 2, sd)
+sd_r <- apply(((r_param - true_param)^2), 2, sd)
+
+# LIMITS
+lim_inf = min(y_1 - sd_own, y_2 - sd_r)
+lim_sup = max(y_1 + sd_own, y_2 + sd_r)
+
+# DISPLAY
+par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+lines(x = POWER, y = y_2, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+abline(h=abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# PLOT STANDARD DEVIATION
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = y_1[i] - sd_own[i], x1 = POWER[i], y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] - sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] - sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] + sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i], y0 = y_2[i] - sd_r[i], x1 = POWER[i], y1 = y_2[i] + sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] - sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] - sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] + sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] + sd_r[i], col = "red")
+}
+
+# SAVE THE GRAPH
+graph_name = "Figure 8.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()
+
+################################################################################
+# 5.5. MSE COEFFICIENTS FOR MA COEFFICIENT
+################################################################################
+
+# LOAD thE DATA
+fit_own_exp = readRDS(file = paste0(path,"lambda_own.RData"))
+fit_r_exp = readRDS(file = paste0(path,"lambda_r.RData"))
+
+#-------------------------------
+# 5.5.1. BOXPLOT
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("$\\hat{lambda}_{MLE}$")
+xlab = "T"
+main = paste0("Fitted $\\lambda$ for $\\",N_SIMULATIONS," \\ \\{I^*_{",process_string,"}(\\omega_k)\\}_{k=1}^{T-1}$")
+y_1 = fit_own_exp
+y_2 = fit_r_exp
+abline_value = 1
+abline_col = "red"
+
+# LIMITS
+lim_inf = min(fit_own_exp,fit_r_exp)
+lim_sup = max(fit_own_exp,fit_r_exp)
+
+# DISPLAY
+par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_1, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+legend("bottomright", legend= TeX("True $\\lambda$"),col = "red", lty=1:2, cex=0.8, bty="n")
+boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_2, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+legend("bottomright", legend= TeX("True $\\lambda$"),col = "red", lty=1:2, cex=0.8, bty="n")
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# SAVE THE GRAPH
+graph_name = "Figure 9.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()
+
+#-------------------------------
+# 5.5.2. LINES
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("$\\hat{lambda}_{MLE}$")
+xlab = "T"
+main = paste0("Fitted $\\lambda$ for $\\",N_SIMULATIONS," \\ \\{I^*_{",process_string,"}(\\omega_k)\\}_{k=1}^{T-1}$")
+true_param = 1
+own_param = fit_own_exp
+r_param = fit_r_exp
+abline_value = 0
+abline_col = "black"
+
+# MSE
+y_1 = colMeans((own_param - true_param)^2)
+y_2 = colMeans((r_param - true_param)^2)
+
+# STANDARD DEVIATION OF SQUARED ERROR
+sd_own <- apply(((own_param - true_param)^2), 2, sd)
+sd_r <- apply(((r_param - true_param)^2), 2, sd)
+
+# LIMITS
+lim_inf = min(y_1 - sd_own, y_2 - sd_r)
+lim_sup = max(y_1 + sd_own, y_2 + sd_r)
+
+# DISPLAY
+par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+lines(x = POWER, y = y_2, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+abline(h=abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# PLOT STANDARD DEVIATION
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = y_1[i] - sd_own[i], x1 = POWER[i], y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] - sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] - sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] + sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i], y0 = y_2[i] - sd_r[i], x1 = POWER[i], y1 = y_2[i] + sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] - sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] - sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] + sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] + sd_r[i], col = "red")
+}
+
+# SAVE THE GRAPH
+graph_name = "Figure 10.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()
+
+################################################################################
+# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT (FREQUENCY DOMAIN)
+################################################################################
+
+# LOAD THE DATA
+p_val_own_exp = readRDS(file = paste0(path,"p.val_own.RData"))
+p_val_r_exp = readRDS(file = paste0(path,"p.val_r.RData"))
+
+#-------------------------------
+# 5.6.1. BOXPLOT
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("$p.value$")
+xlab = "T"
+main = paste0("$H_0: \\ \\{I^*_{",process_string,"}(\\omega_k)\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+y_1 = p_val_own_exp
+y_2 = p_val_r_exp
+abline_value = 0.05
+abline_col = "red"
+
+# LIMITS
+lim_inf = min(p_val_own_exp,p_val_r_exp)
+lim_sup = max(p_val_own_exp,p_val_r_exp)
+
+# DISPLAY
+par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+
+# PLOT
+boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_1, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+title(main = graph_2, cex.main = subtitle_size, line = 0.5)
+abline(h = abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# SAVE THE GRAPH
+graph_name = "Figure 11.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()

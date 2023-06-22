@@ -62,17 +62,34 @@ if (length(ar_coef_vec)==1) {
 ##----------------------------------------------------------------------------##
 ################################################################################
 
-lab_size = 1.5
-subtitle_size = 2
+# GENERAL
 tite_size = 2.5
-legend_size = 2
-width_graphs = 1100
-height_graphs = 550
+subtitle_size = 2
+lab_size = 1.8
 axis_text = 1.5
-resolution_graph = 100
+true_lab = 1.5
+
 graph_1 = "fepxmst"
 graph_2 = "stats"
 legend = c(graph_1, graph_2)
+legend_size = 2
+legend_line = 1
+legend_line_style = 1.5
+
+width_graphs = 1100
+height_graphs = 550
+
+# BOXPLOT c(bottom, left, top, right))mar=c(5,5,6,2)
+bottom_box = 5
+left_box = 6
+top_box = 6
+right_box = 2
+
+# LINES c(bottom, left, top, right))mar=c(5,5,6,2)
+bottom_line = 5
+left_line = 6
+top_line = 6
+right_line = 2
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -106,7 +123,7 @@ lim_inf = min(y_1,y_2)
 lim_sup = max(y_1,y_2)
 
 # DISPLAY
-par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+par(mfrow=c(1,2), mar=c(bottom_box,left_box,top_box,right_box))
 
 # PLOT
 boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
@@ -140,19 +157,19 @@ lim_inf = min(y_1,y_2)
 lim_sup = max(y_1,y_2)
 
 # DISPLAY
-par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,top_line,right_line))
 
 # PLOT
 plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 lines(x = POWER, y = y_2, col = "red", type = "o")
 axis(1, at=POWER, labels = names)
 axis(2)
-legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
 # SAVE THE GRAPH
 graph_name = "Figure 2.png"
-dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs, res = resolution_graph)
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
 dev.off()
 
 ################################################################################
@@ -181,22 +198,22 @@ lim_inf = min(y_1,y_2)
 lim_sup = max(y_1,y_2)
 
 # DISPLAY
-par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+par(mfrow=c(1,2), mar=c(bottom_box,left_box,top_box,right_box))
 
 # PLOT
 boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 title(main = graph_1, cex.main = subtitle_size, line = 0.5)
 abline(h = abline_value, col = abline_col)
-legend("bottomright", legend= TeX("True $\\mu$"),col = "red", lty=1:2, cex=0.8, bty="n")
+legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\mu$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
 boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 title(main = graph_2, cex.main = subtitle_size, line = 0.5)
 abline(h = abline_value, col = abline_col)
-legend("bottomright", legend= TeX("True $\\mu$"),col = "red", lty=1:2, cex=0.8, bty="n")
+legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\mu$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
 # SAVE THE GRAPH
 graph_name = "Figure 3.png"
-dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs, res = resolution_graph)
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
 dev.off()
 
 #-------------------------------
@@ -226,14 +243,14 @@ lim_inf = min(y_1 - sd_own, y_2 - sd_r)
 lim_sup = max(y_1 + sd_own, y_2 + sd_r)
 
 # DISPLAY
-par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,top_line,right_line))
 
 # PLOT
 plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 lines(x = POWER, y = y_2, col = "red", type = "o")
 axis(1, at=POWER, labels = names)
 axis(2)
-legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
 abline(h=abline_value, col = abline_col)
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
@@ -266,6 +283,7 @@ fit_r_phi <- readRDS(file = paste0(path, "phi_1_r.RData"))
 #-------------------------------
 
 if (length(ar_coef_vec)==1) {
+  print(1)
   # PARAMETERS
   ylab = TeX("$\\hat{phi}_{1,\\ Whittle}$")
   xlab = "T"
@@ -280,24 +298,23 @@ if (length(ar_coef_vec)==1) {
   lim_sup = max(y_1,y_2)
 
   # DISPLAY
-  par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+  par(mfrow=c(1,2), mar=c(bottom_box,left_box,top_box,right_box))
 
   # PLOT
   boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
   title(main = graph_1, cex.main = subtitle_size, line = 0.5)
   abline(h = abline_value, col = abline_col)
-  legend("bottomright", legend= TeX("True $\\phi_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\phi_1$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
   boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
   title(main = graph_2, cex.main = subtitle_size, line = 0.5)
   abline(h = abline_value, col = abline_col)
-  legend("bottomright", legend= TeX("True $\\phi_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\phi_1$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
   mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
   # SAVE THE GRAPH
   graph_name = "Figure 5.png"
-  dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs, res = resolution_graph)
+  dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
   dev.off()
-
 }
 
 #-------------------------------
@@ -327,14 +344,14 @@ lim_inf = min(y_1 - sd_own, y_2 - sd_r)
 lim_sup = max(y_1 + sd_own, y_2 + sd_r)
 
 # DISPLAY
-par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,top_line,right_line))
 
 # PLOT
 plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 lines(x = POWER, y = y_2, col = "red", type = "o")
 axis(1, at=POWER, labels = names)
 axis(2)
-legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
 abline(h=abline_value, col = abline_col)
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
@@ -380,17 +397,17 @@ if (length(ma_coef_vec)==1) {
   lim_sup = max(y_1,y_2)
 
   # DISPLAY
-  par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+  par(mfrow=c(1,2), mar=c(bottom_box,left_box,top_box,right_box))
 
   # PLOT
   boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
   title(main = graph_1, cex.main = subtitle_size, line = 0.5)
   abline(h = abline_value, col = abline_col)
-  legend("bottomright", legend= TeX("True $\\theta_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\theta_1$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
   boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
   title(main = graph_2, cex.main = subtitle_size, line = 0.5)
   abline(h = abline_value, col = abline_col)
-  legend("bottomright", legend= TeX("True $\\theta_1$"),col = "red", lty=1:2, cex=0.8, bty="n")
+  legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\theta_1$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
   mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
   # SAVE THE GRAPH
@@ -426,14 +443,14 @@ lim_inf = min(y_1 - sd_own, y_2 - sd_r)
 lim_sup = max(y_1 + sd_own, y_2 + sd_r)
 
 # DISPLAY
-par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,top_line,right_line))
 
 # PLOT
 plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 lines(x = POWER, y = y_2, col = "red", type = "o")
 axis(1, at=POWER, labels = names)
 axis(2)
-legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
 abline(h=abline_value, col = abline_col)
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
@@ -478,17 +495,17 @@ lim_inf = min(fit_own_exp,fit_r_exp)
 lim_sup = max(fit_own_exp,fit_r_exp)
 
 # DISPLAY
-par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+par(mfrow=c(1,2), mar=c(bottom_box,left_box,top_box,right_box))
 
 # PLOT
 boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 title(main = graph_1, cex.main = subtitle_size, line = 0.5)
 abline(h = abline_value, col = abline_col)
-legend("bottomright", legend= TeX("True $\\lambda$"),col = "red", lty=1:2, cex=0.8, bty="n")
+legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\lambda$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
 boxplot(y_2, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 title(main = graph_2, cex.main = subtitle_size, line = 0.5)
 abline(h = abline_value, col = abline_col)
-legend("bottomright", legend= TeX("True $\\lambda$"),col = "red", lty=1:2, cex=0.8, bty="n")
+legend(3,(lim_inf+(lim_sup-lim_inf)/6), legend= TeX("True $\\lambda$"),col = "red", lty=1:2, cex=true_lab, bty="n",lwd=legend_line_style,seg.len=legend_line)
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
 # SAVE THE GRAPH
@@ -523,14 +540,14 @@ lim_inf = min(y_1 - sd_own, y_2 - sd_r)
 lim_sup = max(y_1 + sd_own, y_2 + sd_r)
 
 # DISPLAY
-par(mfrow = c(1, 1), mar=c(5,6,4,2)) # mar = c(bottom, left, top, right))
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,top_line,right_line))
 
 # PLOT
 plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 lines(x = POWER, y = y_2, col = "red", type = "o")
 axis(1, at=POWER, labels = names)
 axis(2)
-legend("topright", legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size)
+legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
 abline(h=abline_value, col = abline_col)
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
@@ -575,7 +592,7 @@ lim_inf = min(p_val_own_exp,p_val_r_exp)
 lim_sup = max(p_val_own_exp,p_val_r_exp)
 
 # DISPLAY
-par(mfrow=c(1,2), mar=c(5,5,6,2)) # mar = c(bottom, left, top, right))
+par(mfrow=c(1,2), mar=c(bottom_box,left_box,top_box,right_box))
 
 # PLOT
 boxplot(y_1, ylim=c(lim_inf,lim_sup), names = names, ylab = ylab, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)

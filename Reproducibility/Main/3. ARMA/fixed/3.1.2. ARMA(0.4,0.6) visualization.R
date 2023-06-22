@@ -105,6 +105,15 @@ right_line = 2
 time_own = readRDS(file = paste0(path,"time_own.RData"))
 time_r = readRDS(file = paste0(path,"time_R.RData"))
 
+t.test(time_own[,1],time_r[,1])
+t.test(time_own[,2],time_r[,2])
+t.test(time_own[,3],time_r[,3])
+t.test(time_own[,4],time_r[,4])
+t.test(time_own[,5],time_r[,5])
+t.test(time_own[,6],time_r[,6])
+t.test(time_own[,7],time_r[,7])
+t.test(time_own[,8],time_r[,8])
+
 #-------------------------------
 # 5.1.1. BOXPLOT
 #-------------------------------
@@ -180,12 +189,21 @@ dev.off()
 average_own <- readRDS(file = paste0(path, "average_own.RData"))
 average_r <- readRDS(file = paste0(path, "average_r.RData"))
 
+t.test(average_own[,1],average_r[,1])
+t.test(average_own[,2],average_r[,2])
+t.test(average_own[,3],average_r[,3])
+t.test(average_own[,4],average_r[,4])
+t.test(average_own[,5],average_r[,5])
+t.test(average_own[,6],average_r[,6])
+t.test(average_own[,7],average_r[,7])
+t.test(average_own[,8],average_r[,8])
+
 #-------------------------------
 # 5.2.1. BOXPLOT
 #-------------------------------
 
 # PARAMETERS
-ylab = TeX("$\\hat{mu}$")
+ylab = TeX("$\\hat{mu}$ MSE")
 xlab = "T"
 main = paste0("Fitted $\\mu$ of $\\",N_SIMULATIONS," \\ \\y_{",process_string,"_t}\\}_{t=1}^{T}$")
 y_1 = average_own
@@ -277,6 +295,15 @@ dev.off()
 # LOAD THE DATA
 fit_own_phi <- readRDS(file = paste0(path, "phi_1_own.RData"))
 fit_r_phi <- readRDS(file = paste0(path, "phi_1_r.RData"))
+
+t.test(fit_own_phi[,1],fit_r_phi[,1])
+t.test(fit_own_phi[,2],fit_r_phi[,2])
+t.test(fit_own_phi[,3],fit_r_phi[,3])
+t.test(fit_own_phi[,4],fit_r_phi[,4])
+t.test(fit_own_phi[,5],fit_r_phi[,5])
+t.test(fit_own_phi[,6],fit_r_phi[,6])
+t.test(fit_own_phi[,7],fit_r_phi[,7])
+t.test(fit_own_phi[,8],fit_r_phi[,8])
 
 #-------------------------------
 # 5.3.1. BOXPLOT
@@ -379,6 +406,15 @@ dev.off()
 fit_own_theta = readRDS(file = paste0(path,"theta_1_own.RData"))
 fit_r_theta = readRDS(file = paste0(path,"theta_1_r.RData"))
 
+t.test(fit_own_theta[,1],fit_r_theta[,1])
+t.test(fit_own_theta[,2],fit_r_theta[,2])
+t.test(fit_own_theta[,3],fit_r_theta[,3])
+t.test(fit_own_theta[,4],fit_r_theta[,4])
+t.test(fit_own_theta[,5],fit_r_theta[,5])
+t.test(fit_own_theta[,6],fit_r_theta[,6])
+t.test(fit_own_theta[,7],fit_r_theta[,7])
+t.test(fit_own_theta[,8],fit_r_theta[,8])
+
 #-------------------------------
 # 5.4.1. BOXPLOT
 #-------------------------------
@@ -473,9 +509,18 @@ dev.off()
 # 5.5. MSE COEFFICIENTS FOR MA COEFFICIENT
 ################################################################################
 
-# LOAD thE DATA
+# LOAD THE DATA
 fit_own_exp = readRDS(file = paste0(path,"lambda_own.RData"))
 fit_r_exp = readRDS(file = paste0(path,"lambda_r.RData"))
+
+t.test(fit_own_exp[,1],fit_r_exp[,1])
+t.test(fit_own_exp[,2],fit_r_exp[,2])
+t.test(fit_own_exp[,3],fit_r_exp[,3])
+t.test(fit_own_exp[,4],fit_r_exp[,4])
+t.test(fit_own_exp[,5],fit_r_exp[,5])
+t.test(fit_own_exp[,6],fit_r_exp[,6])
+t.test(fit_own_exp[,7],fit_r_exp[,7])
+t.test(fit_own_exp[,8],fit_r_exp[,8])
 
 #-------------------------------
 # 5.5.1. BOXPLOT
@@ -574,6 +619,15 @@ dev.off()
 p_val_own_exp = readRDS(file = paste0(path,"p.val_own.RData"))
 p_val_r_exp = readRDS(file = paste0(path,"p.val_r.RData"))
 
+t.test(p_val_own_exp[,1],p_val_r_exp[,1])
+t.test(p_val_own_exp[,2],p_val_r_exp[,2])
+t.test(p_val_own_exp[,3],p_val_r_exp[,3])
+t.test(p_val_own_exp[,4],p_val_r_exp[,4])
+t.test(p_val_own_exp[,5],p_val_r_exp[,5])
+t.test(p_val_own_exp[,6],p_val_r_exp[,6])
+t.test(p_val_own_exp[,7],p_val_r_exp[,7])
+t.test(p_val_own_exp[,8],p_val_r_exp[,8])
+
 #-------------------------------
 # 5.6.1. BOXPLOT
 #-------------------------------
@@ -607,3 +661,43 @@ mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 graph_name = "Figure 11.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
 dev.off()
+
+#-------------------------------
+# 5.5.2. LINES
+#-------------------------------
+
+# PARAMETERS
+ylab = TeX("Non-rejected $H_0$")
+xlab = "T"
+main = paste0("Percentage of non-rejected $H_0: \\ \\{I^*_{",process_string,"}(\\omega_k)\\}_{k=1}^{T-1} \\sim exp(\\lambda=1)$")
+own_param = p_val_own_exp
+r_param = p_val_r_exp
+abline_value = 0.95
+abline_col = "black"
+
+# MSE
+y_1 = colMeans((own_param>=0.05))
+y_2 = colMeans((r_param>=0.05))
+
+# LIMITS
+lim_inf = min(0.9)
+lim_sup = max(1)
+
+# DISPLAY
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,top_line,right_line))
+
+# PLOT
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+lines(x = POWER, y = y_2, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend(11,(lim_sup+0.01), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
+abline(h=abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+
+# SAVE THE GRAPH
+graph_name = "Figure 12.png"
+dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
+dev.off()
+
+t.test(own_param,r_param)

@@ -173,7 +173,7 @@ plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab
 lines(x = POWER, y = y_2, col = "red", type = "o")
 axis(1, at=POWER, labels = names)
 axis(2)
-legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
+legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n")
 mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
 
 # SAVE THE GRAPH

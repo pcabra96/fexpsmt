@@ -10,9 +10,10 @@
 # 4. SIMULATION
 # 5. RESULTS
 # 5.1. TIME
-# 5.2. TIME DOMAIN PARAMETER
-# 5.3. FREQUENCY DOMAIN PARAMETER
-# 5.4. FREQUENCY DOMAIN GOODNESS OF FIT
+# 5.2. AVERAGE
+# 5.3. TIME DOMAIN PARAMETER
+# 5.4. FREQUENCY DOMAIN PARAMETER
+# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -20,9 +21,7 @@
 ##----------------------------------------------------------------------------##
 ################################################################################
 
-library(arfima)
-library(forecast)
-require(MASS)
+library(fracdiff)
 library(latex2exp)
 
 ################################################################################
@@ -39,17 +38,29 @@ set.seed(0)
 ##----------------------------------------------------------------------------##
 ################################################################################
 
-PROCESS = "FARIMA"
+PROCESS = "LMEMORY"
+SUBPROCESS = "multiple"
 symbol = "d"
 d_coef_vec = c(0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45)
 POWER = 7:14
 N_SIMULATIONS = 1000
 names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
 
+################################################################################
+# Save data
+################################################################################
+
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/4. ",PROCESS,"/",SUBPROCESS,"/")
+
 # TIME
 own_times_farima_list = replicate(length(d_coef_vec), matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 own_times_fexp_list = replicate(length(d_coef_vec), matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 r_times_list = replicate(length(d_coef_vec), matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
+
+# AVERAGE
+own_average_farima_list = replicate(length(d_coef_vec), matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
+own_average_fexp_list = replicate(length(d_coef_vec), matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
+r_average_list = replicate(length(d_coef_vec), matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
 
 # PARAMETER ESTIMATION TIME DOMAIN
 own_long_param_farima_list = replicate(length(d_coef_vec), matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER)), simplify = FALSE)
@@ -82,6 +93,11 @@ for (param_number in 1:length(d_coef_vec)) {
   own_times_fexp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
   r_times = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 
+  # AVERAGE
+  own_average_farima = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
+  own_average_fexp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
+  r_average = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
+
   # PARAMETER ESTIMATION TIME DOMAIN
   own_long_param_farima = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
   own_long_param_fexp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -97,11 +113,19 @@ for (param_number in 1:length(d_coef_vec)) {
   own_exp_1_fexp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
   r_exp_1 = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 
+  # F_ARMA(0,0)
+  f_0 = farima.spectrum(ar = 0, ma = 0, n.freq = 1)
+
   for (sim in 1:N_SIMULATIONS) {
     for (j in 1:length(POWER)) {
+
       T = 2^POWER[j]
+
       true_spectrum = farima.spectrum(d = d_coef, n.freq = T)
-      true_spectrum[1] = true_spectrum[length(true_spectrum)]
+      frequency = c(0,pi)
+      freq_2 = seq(frequency[1],frequency[2],length.out = T+1)
+      lamda_aprox = (freq_2[2]-freq_2[1])/T
+      true_spectrum[1] = f_0*abs(lamda_aprox)^(-2*d_coef)
 
       # OWN TIME FOR FARIMA
       own_start = Sys.time()
@@ -117,7 +141,7 @@ for (param_number in 1:length(d_coef_vec)) {
 
       # R TIME
       r_start = Sys.time()
-      y_R = arfima.sim(n = T, model = list(dfrac=d_coef))
+      y_R = fracdiff.sim(n = as.numeric(T), d = d_coef)[["series"]]
       r_end = Sys.time()
       r_times[sim,j] = r_end-r_start
 
@@ -125,9 +149,17 @@ for (param_number in 1:length(d_coef_vec)) {
       # FITTING
       ##################################
 
-      own_long_param_farima[sim,j] = fit.farima(y_own_farima, d = 1)[["d"]]
-      own_long_param_fexp[sim,j] = fit.farima(y_own_fexp, d = 1)[["d"]]
-      r_long_param[sim,j] = fit.farima(y_R, d = 1)[["d"]]
+      own_long_param_farima[sim,j] = fracdiff(x = y_own_farima, nar = 0, nma = 0)[["d"]]
+      own_long_param_fexp[sim,j] = fracdiff(x = y_own_fexp, nar = 0, nma = 0)[["d"]]
+      r_long_param[sim,j] = fracdiff(x = y_R, nar = 0, nma = 0)[["d"]]
+
+      ################################################################################
+      # AVERAGE
+      ################################################################################
+
+      own_average_farima[sim,j] = mean(y_own_farima)
+      own_average_fexp[sim,j] = mean(y_own_fexp)
+      r_average[sim,j] = mean(y_R)
 
       ################################################################################
       # PERIODOGRAM
@@ -173,6 +205,11 @@ for (param_number in 1:length(d_coef_vec)) {
   own_times_fexp_list[[param_number]] = own_times_fexp
   r_times_list[[param_number]] = r_times
 
+  # AVERAGE
+  own_average_farima_list[[param_number]] = own_average_farima
+  own_average_fexp_list[[param_number]] = own_average_fexp
+  r_average_list[[param_number]] = r_average
+
   # PARAMETER ESTIMATION TIME DOMAIN
   own_long_param_farima_list[[param_number]] = own_long_param_farima
   own_long_param_fexp_list[[param_number]] = own_long_param_fexp
@@ -187,17 +224,17 @@ for (param_number in 1:length(d_coef_vec)) {
   own_exp_1_farima_list[[param_number]] = own_exp_1_farima
   own_exp_1_fexp_list[[param_number]] = own_exp_1_fexp
   r_exp_1_list[[param_number]] = r_exp_1
+
 }
 end_time = Sys.time()
 total_time = end_time - begin_time
+print(total_time)
 
 ################################################################################
 ##----------------------------------------------------------------------------##
 ## 5. RESULTS                                                                 ##
 ##----------------------------------------------------------------------------##
 ################################################################################
-
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/LMEMORY/")
 
 ################################################################################
 # 5.1. TIME
@@ -208,7 +245,15 @@ saveRDS(own_times_fexp_list, file = paste0(path,"own_times_fexp_list.RData"))
 saveRDS(r_times_list, file = paste0(path,"r_times_list.RData"))
 
 ################################################################################
-# 5.2. TIME DOMAIN PARAMETER
+# 5.2. AVERAGE
+################################################################################
+
+saveRDS(own_average_farima_list, file = paste0(path,"own_average_farima_list.RData"))
+saveRDS(own_average_fexp_list, file = paste0(path,"own_average_fexp_list.RData"))
+saveRDS(r_average_list, file = paste0(path,"r_average_list.RData"))
+
+################################################################################
+# 5.3. TIME DOMAIN PARAMETER
 ################################################################################
 
 saveRDS(own_long_param_farima_list, file = paste0(path,"own_long_param_farima_list.RData"))
@@ -216,7 +261,7 @@ saveRDS(own_long_param_fexp_list, file = paste0(path,"own_long_param_fexp_list.R
 saveRDS(r_long_param_list, file = paste0(path,"r_long_param_list.RData"))
 
 ################################################################################
-# 5.3. FREQUENCY DOMAIN PARAMETER
+# 5.4. FREQUENCY DOMAIN PARAMETER
 ################################################################################
 
 saveRDS(own_lambda_farima_list, file = paste0(path,"own_lambda_farima_list.RData"))
@@ -224,7 +269,7 @@ saveRDS(own_lambda_fexp_list, file = paste0(path,"own_lambda_fexp_list.RData"))
 saveRDS(r_lambda_list, file = paste0(path,"r_lambda_list.RData"))
 
 ################################################################################
-# 5.4. FREQUENCY DOMAIN GOODNESS OF FIT
+# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT
 ################################################################################
 
 saveRDS(own_exp_1_farima_list, file = paste0(path,"own_exp_1_farima_list.RData"))

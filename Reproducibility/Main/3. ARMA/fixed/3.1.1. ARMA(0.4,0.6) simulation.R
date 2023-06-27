@@ -15,6 +15,7 @@ set.seed(0)
 ################################################################################
 
 PROCESS = "ARMA"
+SUBPROCESS = "fixed"
 POWER = 7:14
 N_SIMULATIONS = 1000
 ar_coef = 0.4
@@ -26,7 +27,7 @@ names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$
 # Save data
 ################################################################################
 
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/3. ",PROCESS,"/fixed/")
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/3. ",PROCESS,"/",SUBPROCESS,"/")
 
 # TIME
 time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))

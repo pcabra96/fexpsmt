@@ -24,7 +24,7 @@ names = c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11
 # PATH TO LOAD THE DATA
 ################################################################################
 
-path = "~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/AR/"
+path = "~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/1. AR/fixed multiple/"
 
 ################################################################################
 # Running time

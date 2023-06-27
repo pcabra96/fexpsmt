@@ -4,25 +4,25 @@ sim.fexp <- function(ck, d = 0, T = 512){
   i = complex(real = 0, imaginary = 1)
   d = d
   M = T*2
-  frequency = c(0,2*pi)
+  frequency = c(0,pi)
   freq <- seq.int(frequency[1], frequency[2], length.out = M)
 
-  spectral_ts = fexp.spectrum(ck = ck, d = 0, frequency = frequency, n.freq = M)
+  #spectral_ts = fexp.spectrum(ck = ck, d = 0, frequency = frequency, n.freq = M)
+  spectral_ts = fexp.spectrum(ck = ck, d = d, frequency = frequency, n.freq = T+1)
 
   # Include long memory component
-  l.m <- sapply(freq, function(x) abs(2*sin(x*(1/2)))^(-2*d))
-  spectral_ts = spectral_ts*l.m
+  #l.m <- sapply(freq, function(x) abs(2*sin(x*(1/2)))^(-2*d))
+  #spectral_ts = spectral_ts*l.m
 
   # Approx f(0) when there is long memory component.
-  if(d!=0){
+'  if(d!=0){
     freq_2 = seq(frequency[1],frequency[2],length.out = T+1)
     lamda_aprox = (freq_2[2]-freq_2[1])/T
-    H = d+0.5
-    lamda_aprox = lamda_aprox^(1-2*H)
-    c_f = (1/(2*pi))*sin(H*pi)*gamma(2*H+1)
-    spectral_ts[1] = lamda_aprox*c_f
+    f_0 = farima.spectrum(ar = 0, ma = 0, n.freq = 1)
+    spectral_ts[1] = f_0*abs(lamda_aprox)^(-2*d)
   }
-  spectral_ts = spectral_ts[1:(T+1)]
+'
+  spectral_ts[1] = spectral_ts[2]*2
 
   # Assign values to parameters
   Ws = rnorm(M)

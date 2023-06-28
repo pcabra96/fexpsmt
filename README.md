@@ -3,4 +3,4 @@ We are currently developing an R package that allows for the simulation of FARIM
 
 In the reproducibility folder one can find all the Monte Carlo experimnets that proove the correctness of this package. Each subfolder has two to three subfolders. The first can be "single fixed" which shows an example in depth for a specific parameter the respective process.The second can be "multiple fixed" which shows summary tables of the experiments for a significant sample of parameters, whicih vary from being close to non stationarity to being close of being white noise. The third can be "sampled" which simulates the time series with sampled parameters from a uniform distribution wihtin the bounds in which the process is stationary.
 
-For the AR, MA, ARMA proceses, the experiments compare the simulations of fexpmst and stats packages
+For the AR, MA, ARMA proceses, the experiments compare the simulations of fexpmst and stats packages, while for the FARIMA process they compare simulations of fexpmst and fracdiff package.

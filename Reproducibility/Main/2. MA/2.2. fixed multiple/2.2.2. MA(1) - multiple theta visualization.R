@@ -2,113 +2,458 @@
 # PACKAGES
 ################################################################################
 
-library(forecast)
-require(MASS)
 library(latex2exp)
-library(xtable)
-library(Hmisc)
-library(kableExtra)
-library(plot.matrix)
+library(gt)
+library(magrittr)
+library(htmltools)
+library(ggplot2)
+library(tidyr)
+library(reshape2)
 
 ################################################################################
 # PARAMETERS
 ################################################################################
 
+PROCESS = "MA"
+SUBPROCESS = "fixed multiple"
 ma_coef_vec = c(-0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9)
 POWER = 7:14
 N_SIMULATIONS = 1000
-names = c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
+names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/2. ",PROCESS,"/2.2. ",SUBPROCESS,"/")
 
 ################################################################################
-# PATH TO LOAD THE DATA
+# 5.1. TIME
 ################################################################################
 
-path = "~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/2. MA/"
+time_own_list = readRDS(file = paste0(path,"time_own_list.RData"))
+time_r_list = readRDS(file = paste0(path,"time_r_list.RData"))
+
+average_time_own = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+average_time_r = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+for (i in 1:length(ma_coef_vec)) {
+  average_time_own[i,] = colMeans((time_own_list[[i]]))
+  average_time_r[i,] = colMeans((time_r_list[[i]]))
+}
+
+#-------------------------------------------------------------------------------
+# 5.1.1. fexpmst MA
+#-------------------------------------------------------------------------------
+
+param = average_time_r
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package = "stats"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0(package," average running time (s) of ", N_SIMULATIONS, " {y<sub>", process_string, "<sub><sub>t</sub></sub></sub>}<sub>",equation_html)
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 1.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.1.2. stats MA
+#-------------------------------------------------------------------------------
+
+param = average_time_r
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package = "stats"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0(package," average running time (s) of ", N_SIMULATIONS, " {y<sub>", process_string, "<sub><sub>t</sub></sub></sub>}<sub>",equation_html)
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 2.png",path = path)
+
 
 ################################################################################
-# Running time
+# 5.2. AVERAGE
+################################################################################
+
+# DATA LISTS
+average_own_list = readRDS(file = paste0(path,"average_own_list.RData"))
+average_r_list = readRDS(file = paste0(path,"average_r_list.RData"))
+
+# DATA MATRICES
+own_average_farima_matrix = matrix(0,nrow = length(ma_coef_vec), ncol = length(POWER))
+r_average_matrix = matrix(0,nrow = length(ma_coef_vec), ncol = length(POWER))
+
+for (wich_d in 1:length(ma_coef_vec)) {
+  own_average_farima_matrix[wich_d,] = colMeans((average_own_list[[wich_d]])^2)
+  r_average_matrix[wich_d,] = colMeans((average_r_list[[wich_d]])^2)
+}
+
+#-------------------------------------------------------------------------------
+# 5.2.1. stats MA
+#-------------------------------------------------------------------------------
+
+param = own_average_farima_matrix
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package = "fexpmst"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("MSE(y&#x0304<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 3.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.2.2 stats MA
+#-------------------------------------------------------------------------------
+
+param = r_average_matrix
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package = "stats"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("MSE(y&#x0304<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 4.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.2.3. fexmpst MA vs stats MA
+#-------------------------------------------------------------------------------
+
+param = (r_average_matrix/own_average_farima_matrix)
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+process_string = "MA(1)"
+package_1 = "stats"
+package_2 = "fexpmst"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("MSE(y&#x0304<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/MSE(y&#x0304<sub>",package_2,"<sub><sub>",process_string,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 5.png",path = path)
+
+
+################################################################################
+# 5.3. MSE COEFFICIENTS for phi
 ################################################################################
 
 # DATA
-time_own_matrix = readRDS(file = paste0(path,"time_own.RData"))
-time_r_matrix = readRDS(file = paste0(path,"time_R.RData"))
+fit_own_coef_list = readRDS(file = paste0(path,"fit_own_coef_list.RData"))
+fit_r_coef_list = readRDS(file = paste0(path,"fit_r_coef_list.RData"))
 
-# AXIS NAMES FOR LATEX
-rownames(time_own_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(time_own_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(time_r_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(time_r_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+# DATA MATRICES
+MSE_own = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+MSE_r = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
 
-comparison_matrix = as.matrix(time_own_matrix<=time_r_matrix)
+for (i in 1:length(ma_coef_vec)) {
+  MSE_own[i,] = colMeans((fit_own_coef_list[[i]]-ma_coef_vec[i])^2)
+  MSE_r[i,] = colMeans((fit_r_coef_list[[i]]-ma_coef_vec[i])^2)
+}
 
-# LATEX OUTPUT
-time_own_matrix = xtable(time_own_matrix, digits = 5)
-time_r_matrix = xtable(time_r_matrix, digits = 5)
-print(time_own_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(time_own_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(time_r_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(time_r_matrix)), sanitize.text.function = function(x) {x})
+#-------------------------------------------------------------------------------
+# 5.3.1 fexpmst MA
+#-------------------------------------------------------------------------------
+
+param = MSE_own
+package = "fexpmst"
+main = paste0("MSE(fitted &varphi;<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
+process_string = "MA(1)"
+
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 6.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.3.2 stats MA
+#-------------------------------------------------------------------------------
+
+param = MSE_r
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package = "stats"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("MSE(fitted &varphi;<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 7.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.3.3 fexpmst vs stats MA
+#-------------------------------------------------------------------------------
+
+param = (MSE_r/MSE_own)
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package_1 = "stats"
+package_2 = "fexpmst"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("MSE(fitted &varphi;<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/MSE(fitted &varphi;<sub>",package_2,"<sub><sub>",package_2,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 8.png",path = path)
 
 ################################################################################
-# MSE COEFFICIENTS for phi
+# 5.4. FREQUENCY DOMAIN PARAMETER
 ################################################################################
 
 # DATA
-fit_own_coef_matrix = readRDS(file = paste0(path,"theta_1_own.RData"))
-fit_r_coef_matrix = readRDS(file = paste0(path,"theta_1_r.RData"))
+fit_own_exp_list = readRDS(file = paste0(path,"fit_own_exp_list.RData"))
+fit_r_exp_list = readRDS(file = paste0(path,"fit_r_exp_list.RData"))
 
-# AXIS NAMES FOR LATEX
-rownames(fit_own_coef_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_own_coef_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(fit_r_coef_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_r_coef_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+# OWN CODE
+MSE_own = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+MSE_r = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+for (i in 1:length(ma_coef_vec)) {
+  MSE_own[i,] = colMeans((fit_own_exp_list[[i]]-1)^2)
+  MSE_r[i,] = colMeans((fit_r_exp_list[[i]]-1)^2)
+}
 
-comparison_matrix = as.matrix(fit_own_coef_matrix<=fit_r_coef_matrix)
+#-------------------------------------------------------------------------------
+# 5.4.1 fexpmst MA
+#-------------------------------------------------------------------------------
 
-# LATEX OUTPUT
-fit_own_coef_matrix = xtable(fit_own_coef_matrix, digits = 5)
-fit_r_coef_matrix = xtable(fit_r_coef_matrix, digits = 5)
-print(fit_own_coef_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_own_coef_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(fit_r_coef_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_r_coef_matrix)), sanitize.text.function = function(x) {x})
+param = MSE_own
+package_string = "fexpmst"
+main = paste0("MSE(fitted &lambda;<sub>",package_string,"<sub><sub>",process_string,"</sub></sub></sub>)")
+process_string = "MA(1)"
+
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 9.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.3.2 stats MA
+#-------------------------------------------------------------------------------
+
+param = MSE_r
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package_string = "stats"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("MSE(fitted &lambda;<sub>",package_string,"<sub><sub>",process_string,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 10.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.4.3 fexpmst vs stats MA
+#-------------------------------------------------------------------------------
+
+param = (MSE_r/MSE_own)
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package_1 = "stats"
+package_2 = "fexpmst"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("MSE(fitted &lambda;<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/MSE(fitted &lambda;<sub>",package_2,"<sub><sub>",package_2,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 11.png",path = path)
 
 ################################################################################
-# MSE COEFFICIENTS for lambda=1
+# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT
 ################################################################################
 
 # DATA
-fit_own_exp_matrix = readRDS(file = paste0(path,"lambda_own.RData"))
-fit_r_exp_matrix = readRDS(file = paste0(path,"lambda_r.RData"))
+p_val_own_exp_list = readRDS(file = paste0(path,"p_val_own_exp_list.RData"))
+p_val_r_exp_list = readRDS(file = paste0(path,"p_val_r_exp_list.RData"))
 
-# AXIS NAMES FOR LATEX
-rownames(fit_own_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_own_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(fit_r_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(fit_r_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+# OWN CODE
+prop_non_rejection_own = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+prop_non_rejection_r = matrix(0, nrow = length(ma_coef_vec), ncol = length(POWER))
+for (i in 1:length(ma_coef_vec)) {
+  prop_non_rejection_own[i,] = colMeans(p_val_own_exp_list[[i]]>=0.05)
+  prop_non_rejection_r[i,] = colMeans(p_val_r_exp_list[[i]]>=0.05)
+}
 
-comparison_matrix = as.matrix(fit_own_exp_matrix<=fit_r_exp_matrix)
+#-------------------------------------------------------------------------------
+# 5.4.1 fexpmst MA
+#-------------------------------------------------------------------------------
 
-# LATEX OUTPUT
-fit_own_exp_matrix = xtable(fit_own_exp_matrix, digits = 5)
-fit_r_exp_matrix = xtable(fit_r_exp_matrix, digits = 5)
-print(fit_own_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_own_exp_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(fit_r_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(fit_r_exp_matrix)), sanitize.text.function = function(x) {x})
+param = prop_non_rejection_own
+package_string = "fexpmst"
+process_string = "MA(1)"
+main = paste0("Percentage of non rejected H<sub>0</sub>: I<sup>*</sup><sub>",package_string,"<sub><sub>",process_string,"</sub></sub></sub> &sim; exp(&lambda;=1)")
 
-################################################################################
-# Correct p-values for EXP(1)
-################################################################################
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-# DATA
-p_val_own_exp_matrix = readRDS(file = paste0(path,"p.val_own.RData"))
-p_val_r_exp_matrix = readRDS(file = paste0(path,"p.val_R.RData"))
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
-# AXIS NAMES FOR LATEX
-rownames(p_val_own_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(p_val_own_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
-rownames(p_val_r_exp_matrix) = paste0("$\\mathbf{",ma_coef_vec,"}$")
-colnames(p_val_r_exp_matrix) = paste0("$\\mathbf{2^{",POWER,"}}$")
+gt_tbl
 
-comparison_matrix = as.matrix(p_val_own_exp_matrix<p_val_r_exp_matrix)
+gtsave(gt_tbl, filename = "Table 12.png",path = path)
 
-# LATEX OUTPUT
-p_val_own_exp_matrix = xtable(p_val_own_exp_matrix, digits = 5)
-p_val_r_exp_matrix = xtable(p_val_r_exp_matrix, digits = 5)
-print(p_val_own_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(p_val_own_exp_matrix)), sanitize.text.function = function(x) {x},booktabs = TRUE)
-print(p_val_r_exp_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(p_val_r_exp_matrix)), sanitize.text.function = function(x) {x})
+#-------------------------------------------------------------------------------
+# 5.3.2 stats MA
+#-------------------------------------------------------------------------------
+
+param = prop_non_rejection_r
+package_string = "stats"
+process_string = "MA(1)"
+main = paste0("Percentage of non rejected H<sub>0</sub>: I<sup>*</sup><sub>",package_string,"<sub><sub>",process_string,"</sub></sub></sub> &sim; exp(&lambda;=1)")
+
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 13.png",path = path)
+
+#-------------------------------------------------------------------------------
+# 5.4.3 fexpmst vs stats MA
+#-------------------------------------------------------------------------------
+
+param = (prop_non_rejection_r/prop_non_rejection_own)
+rownames(param) = paste0(ma_coef_vec,"")
+colnames(param) = paste0(POWER,"")
+param = as.data.frame(param)
+
+package_1 = "stats"
+package_2 = "fexpmst"
+process_string = "MA(1)"
+equation <- "T<br>t=1"
+equation_html <- paste0("<div class='equation'>", equation, "</div>")
+main = paste0("(H<sub>0</sub>:<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/(H<sub>0</sub>:<sub>",package_2,"<sub><sub>",process_string,"</sub></sub></sub>)")
+css <- ".equation {display: inline-block;vertical-align: middle;}"
+
+gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+  fmt_number(columns = everything(), decimals = 5) |>
+  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
+
+gt_tbl
+
+gtsave(gt_tbl, filename = "Table 14.png",path = path)

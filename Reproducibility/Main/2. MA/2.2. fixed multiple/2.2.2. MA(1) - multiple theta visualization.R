@@ -45,16 +45,16 @@ rownames(param) = paste0(ma_coef_vec,"")
 colnames(param) = paste0(POWER,"")
 param = as.data.frame(param)
 
-package = "stats"
+package = "fexpmst"
 process_string = "MA(1)"
 equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0(package," average running time (s) of ", N_SIMULATIONS, " {y<sub>", process_string, "<sub><sub>t</sub></sub></sub>}<sub>",equation_html)
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -77,9 +77,9 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0(package," average running time (s) of ", N_SIMULATIONS, " {y<sub>", process_string, "<sub><sub>t</sub></sub></sub>}<sub>",equation_html)
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -120,9 +120,9 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("MSE(y&#x0304<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -145,9 +145,9 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("MSE(y&#x0304<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -171,9 +171,9 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("MSE(y&#x0304<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/MSE(y&#x0304<sub>",package_2,"<sub><sub>",process_string,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -204,7 +204,7 @@ for (i in 1:length(ma_coef_vec)) {
 
 param = MSE_own
 package = "fexpmst"
-main = paste0("MSE(fitted &varphi;<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
+main = paste0("MSE(fitted &theta;<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
 process_string = "MA(1)"
 
 rownames(param) = paste0(ma_coef_vec,"")
@@ -214,9 +214,9 @@ equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -236,12 +236,12 @@ package = "stats"
 process_string = "MA(1)"
 equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
-main = paste0("MSE(fitted &varphi;<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
+main = paste0("MSE(fitted &theta;<sub>",package,"<sub><sub>",process_string,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -262,12 +262,12 @@ package_2 = "fexpmst"
 process_string = "MA(1)"
 equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
-main = paste0("MSE(fitted &varphi;<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/MSE(fitted &varphi;<sub>",package_2,"<sub><sub>",package_2,"</sub></sub></sub>)")
+main = paste0("MSE(fitted &theta;<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/MSE(fitted &theta;<sub>",package_2,"<sub><sub>",package_2,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -306,9 +306,9 @@ equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -331,9 +331,9 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("MSE(fitted &lambda;<sub>",package_string,"<sub><sub>",process_string,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -357,9 +357,9 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("MSE(fitted &lambda;<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/MSE(fitted &lambda;<sub>",package_2,"<sub><sub>",package_2,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -398,9 +398,9 @@ equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -423,9 +423,9 @@ equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl
@@ -449,9 +449,9 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("(H<sub>0</sub>:<sub>",package_1,"<sub><sub>",process_string,"</sub></sub></sub>)/(H<sub>0</sub>:<sub>",package_2,"<sub><sub>",process_string,"</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- param |> gt(rowname_col = html("Phi"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
+gt_tbl <- param |> gt(rowname_col = html("Theta"), rownames_to_stub = TRUE) |> tab_spanner(label = "T", columns = colnames(average_time_own) ) |>
   fmt_number(columns = everything(), decimals = 5) |>
-  tab_stubhead(label = HTML("&varphi;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
+  tab_stubhead(label = HTML("&theta;<sub>1</sub>") ) |> tab_header(title =  HTML(main)) |> opt_css(css)|>
   cols_label("7" = HTML("2<sup>7</sup>"),"8" = HTML("2<sup>8</sup>"),"9" = HTML("2<sup>9</sup>"),"10" = HTML("2<sup>10</sup>"),"11" = HTML("2<sup>11</sup>"),"12" = HTML("2<sup>12</sup>"),"13" = HTML("2<sup>13</sup>"),"14" = HTML("2<sup>14</sup>"))
 
 gt_tbl

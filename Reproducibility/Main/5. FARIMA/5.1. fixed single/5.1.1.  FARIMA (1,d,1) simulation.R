@@ -3,8 +3,6 @@
 ################################################################################
 
 library(fracdiff)
-library(forecast)
-require(MASS)
 
 ################################################################################
 # SEED
@@ -18,19 +16,16 @@ set.seed(0)
 
 PROCESS = "FARIMA"
 SUBPROCESS = "fixed single"
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/5. ",PROCESS,"/5.1. ",SUBPROCESS,"/")
 POWER = 7:14
-N_SIMULATIONS = 1000
+N_SIMULATIONS = 10
 ar_coef_vec = 0.7
 ma_coef_vec = 0.4
 d_coef_vec = 0.25
 
-names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
-
 ################################################################################
 # Save data
 ################################################################################
-
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/5. ",PROCESS,"/5.1. ",SUBPROCESS,"/")
 
 # TIME
 time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))

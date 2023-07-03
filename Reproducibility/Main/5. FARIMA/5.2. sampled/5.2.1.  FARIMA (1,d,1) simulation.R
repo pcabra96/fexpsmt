@@ -1,36 +1,59 @@
 ################################################################################
-# PACKAGES
+# INDEX
+################################################################################
+
+# 1. PACKAGES
+# 2. SEED
+# 3. SIMULATION PARAMETERS
+# 4. SIMULATION
+# 5. RESULTS
+# 5.1. COEFFICIENTS
+# 5.2. TIME
+# 5.3. TIME SERIES AVERAGE
+# 5.4. PHI COEFFICIENTS
+# 5.5. THETA COEFFICIENTS
+# 5.6. d COEFFICIENTS
+# 5.7. FREQUENCY DOMAIN PARAMETER
+# 5.8. FREQUENCY DOMAIN GOODNESS OF FIT
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 1. PACKAGES                                                                ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 library(fracdiff)
 library(forecast)
-require(MASS)
+library(MASS)
 
 ################################################################################
-# SEED
+##----------------------------------------------------------------------------##
+## 2. SEED                                                                    ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 set.seed(0)
 
 ################################################################################
-# PARAMETERS
+##----------------------------------------------------------------------------##
+## 3. SIMULATION PARAMETERS                                                   ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 PROCESS = "FARIMA"
 SUBPROCESS = "sampled"
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/5. ",PROCESS,"/5.2. ",SUBPROCESS,"/")
 POWER = 7:14
 N_SIMULATIONS = 1000
 ar_coef_vec = runif(N_SIMULATIONS, min = -0.9, max = 0.9)
 ma_coef_vec = runif(N_SIMULATIONS, min = -0.9, max = 0.9)
 d_coef_vec = runif(N_SIMULATIONS, min = 0, max = 0.5)
 
-names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
-
 ################################################################################
-# Save data
+##----------------------------------------------------------------------------##
+## 4. SIMULATION (expected runtime in mac with m1 chip:  9.8 mins)            ##
+##----------------------------------------------------------------------------##
 ################################################################################
-
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/5. ",PROCESS,"/5.2. ",SUBPROCESS,"/")
 
 # TIME
 time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -60,10 +83,6 @@ fit_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 p_val_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 p_val_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 
-################################################################################
-# SIMULATION
-################################################################################
-
 for (sim in 1:N_SIMULATIONS) {
   if(abs(ma_coef_vec[sim]+ar_coef_vec[sim])<0.1){
     if (abs(ar_coef_vec[sim])<0.1 ){
@@ -87,13 +106,13 @@ for (sim in 1:N_SIMULATIONS) {
     true_spectrum = farima.spectrum(ar = ar_coef,ma= ma_coef, d = d_coef, n.freq = T)
     true_spectrum[1] = true_spectrum[length(true_spectrum)]
 
-    # ARMA(1,1) OWN simulations
+    # FARIMA(1,d,1) OWN simulations
     start_own = Sys.time()
     y_own = sim.farima(ar = ar_coef, ma = ma_coef, d = d_coef, T = T)
     end_own = Sys.time()
     time_own[sim,j] = end_own-start_own
 
-    # AR EXISTING PACKAGE
+    # FARIMA(1,d,1) fracdiff simulations
     start_r = Sys.time()
     y_r = fracdiff.sim(n = T, ar = ar_coef, ma = -ma_coef, d = d_coef)[["series"]]
     end_r = Sys.time()
@@ -159,7 +178,13 @@ total_time = end-start
 print(total_time)
 
 ################################################################################
-# SAVE AR and MA parameteres
+##----------------------------------------------------------------------------##
+## 5. RESULTS                                                                 ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+################################################################################
+# 5.1. COEFFICIENTS
 ################################################################################
 
 saveRDS(ar_coef_vec, file = paste0(path,"ar_coef_vec.RData"))
@@ -167,7 +192,7 @@ saveRDS(ma_coef_vec, file = paste0(path,"ma_coef_vec.RData"))
 saveRDS(d_coef_vec, file = paste0(path,"d_coef_vec.RData"))
 
 ################################################################################
-# Running time
+# 5.2. TIME
 ################################################################################
 
 colnames(time_own) = POWER
@@ -177,7 +202,7 @@ saveRDS(time_own, file = paste0(path,"time_own.RData"))
 saveRDS(time_r, file = paste0(path,"time_R.RData"))
 
 ################################################################################
-# AVERAGE
+# 5.3. TIME SERIES AVERAGE
 ################################################################################
 
 colnames(average_own) = POWER
@@ -187,7 +212,7 @@ saveRDS(average_own, file = paste0(path,"average_own.RData"))
 saveRDS(average_r, file = paste0(path,"average_r.RData"))
 
 ################################################################################
-# MSE COEFFICIENTS for phi
+# 5.4. PHI COEFFICIENTS
 ################################################################################
 
 colnames(fit_own_phi) = POWER
@@ -197,7 +222,7 @@ saveRDS(fit_own_phi, file = paste0(path,"phi_1_own.RData"))
 saveRDS(fit_r_phi, file = paste0(path,"phi_1_r.RData"))
 
 ################################################################################
-# MSE COEFFICIENTS for theta
+# 5.5. THETA COEFFICIENTS
 ################################################################################
 
 colnames(fit_own_theta) = POWER
@@ -207,7 +232,7 @@ saveRDS(fit_own_theta, file = paste0(path,"theta_1_own.RData"))
 saveRDS(fit_r_theta, file = paste0(path,"theta_1_r.RData"))
 
 ################################################################################
-# MSE COEFFICIENTS for d
+# 5.6. d COEFFICIENTS
 ################################################################################
 
 colnames(fit_own_d) = POWER
@@ -217,7 +242,7 @@ saveRDS(fit_own_d, file = paste0(path,"d_own.RData"))
 saveRDS(fit_r_d, file = paste0(path,"d_r.RData"))
 
 ################################################################################
-# MSE COEFFICIENTS for lambda=1
+# 5.7. FREQUENCY DOMAIN PARAMETER
 ################################################################################
 
 # OWN CODE
@@ -228,7 +253,7 @@ saveRDS(fit_own_exp, file = paste0(path,"lambda_own.RData"))
 saveRDS(fit_r_exp, file = paste0(path,"lambda_r.RData"))
 
 ################################################################################
-# Correct p-values for EXP(1)
+# 5.8. FREQUENCY DOMAIN GOODNESS OF FIT
 ################################################################################
 
 # OWN CODE

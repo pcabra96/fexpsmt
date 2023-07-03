@@ -1,19 +1,33 @@
 ################################################################################
-# PACKAGES
+##----------------------------------------------------------------------------##
+## INDEX                                                                      ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
-library(forecast)
-require(MASS)
-library(latex2exp)
+# 1. SEED
+# 2. SIMULATION PARAMETERS
+# 3. SIMULATION
+# 4. RESULTS
+# 4.1. COEFFICIENTS
+# 4.2. TIME
+# 4.3. TIME SERIES AVERAGE
+# 4.4. PHI COEFFICIENTS
+# 4.5. THETA COEFFICIENTS
+# 4.6. FREQUENCY DOMAIN PARAMETER
+# 4.7. FREQUENCY DOMAIN GOODNESS OF FIT
 
 ################################################################################
-# SEED
+##----------------------------------------------------------------------------##
+## 1. SEED                                                                    ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 set.seed(0)
 
 ################################################################################
-# PARAMETERS
+##----------------------------------------------------------------------------##
+## 3. SIMULATION PARAMETERS                                                   ##
+##----------------------------------------------------------------------------##
 ################################################################################
 
 PROCESS = "ARMA"
@@ -22,14 +36,13 @@ POWER = 7:14
 N_SIMULATIONS = 1000
 ar_coef_vec = runif(N_SIMULATIONS, min = -0.9, max = 0.9)
 ma_coef_vec = runif(N_SIMULATIONS, min = -0.9, max = 0.9)
-
-names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
-
-################################################################################
-# Save data
-################################################################################
-
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/3. ",PROCESS,"/3.2. ",SUBPROCESS,"/")
+
+################################################################################
+##----------------------------------------------------------------------------##
+## 4. SIMULATION (expected runtime in mac with m1 chip: 54.35928 mins)        ##
+##----------------------------------------------------------------------------##
+################################################################################
 
 # TIME
 time_own = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
@@ -55,10 +68,7 @@ fit_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 p_val_own_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 p_val_r_exp = matrix(0,nrow = N_SIMULATIONS, ncol = length(POWER))
 
-################################################################################
-# SIMULATION
-################################################################################
-
+# Ensure no common roots between AR and MA
 for (sim in 1:N_SIMULATIONS) {
     if(abs(ma_coef_vec[sim]+ar_coef_vec[sim])<0.1){
       if (abs(ar_coef_vec[sim])<0.1 ){
@@ -153,14 +163,20 @@ total_time = end-start
 print(total_time)
 
 ################################################################################
-# SAVE AR and MA parameteres
+##----------------------------------------------------------------------------##
+## 4. RESULTS                                                                 ##
+##----------------------------------------------------------------------------##
+################################################################################
+
+################################################################################
+# 4.1. COEFFICIENTS
 ################################################################################
 
 saveRDS(ar_coef_vec, file = paste0(path,"ar_coef_vec.RData"))
 saveRDS(ma_coef_vec, file = paste0(path,"ma_coef_vec.RData"))
 
 ################################################################################
-# Running time
+# 4.2. TIME
 ################################################################################
 
 colnames(time_own) = POWER
@@ -170,7 +186,7 @@ saveRDS(time_own, file = paste0(path,"time_own.RData"))
 saveRDS(time_r, file = paste0(path,"time_R.RData"))
 
 ################################################################################
-# Time Series average
+# 4.3. TIME SERIES AVERAGE
 ################################################################################
 
 colnames(average_own) = POWER
@@ -180,7 +196,7 @@ saveRDS(average_own, file = paste0(path,"average_own.RData"))
 saveRDS(average_r, file = paste0(path,"average_r.RData"))
 
 ################################################################################
-# MSE COEFFICIENTS for phi
+# 4.4. PHI COEFFICIENTS
 ################################################################################
 
 colnames(fit_own_phi) = POWER
@@ -190,7 +206,7 @@ saveRDS(fit_own_phi, file = paste0(path,"phi_1_own.RData"))
 saveRDS(fit_r_phi, file = paste0(path,"phi_1_r.RData"))
 
 ################################################################################
-# MSE COEFFICIENTS for theta
+# 4.5. THETA COEFFICIENTS
 ################################################################################
 
 colnames(fit_own_theta) = POWER
@@ -200,10 +216,9 @@ saveRDS(fit_own_theta, file = paste0(path,"theta_1_own.RData"))
 saveRDS(fit_r_theta, file = paste0(path,"theta_1_r.RData"))
 
 ################################################################################
-# MSE COEFFICIENTS for lambda=1
+# 4.6. FREQUENCY DOMAIN PARAMETER
 ################################################################################
 
-# OWN CODE
 colnames(fit_own_exp) = POWER
 colnames(fit_r_exp) = POWER
 
@@ -211,10 +226,9 @@ saveRDS(fit_own_exp, file = paste0(path,"lambda_own.RData"))
 saveRDS(fit_r_exp, file = paste0(path,"lambda_r.RData"))
 
 ################################################################################
-# Correct p-values for EXP(1)
+# 4.7. FREQUENCY DOMAIN GOODNESS OF FIT
 ################################################################################
 
-# OWN CODE
 colnames(p_val_own_exp) = POWER
 colnames(p_val_r_exp) = POWER
 

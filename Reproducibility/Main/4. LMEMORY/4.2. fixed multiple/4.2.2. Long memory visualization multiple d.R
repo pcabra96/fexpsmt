@@ -9,11 +9,11 @@
 # 3. SIMULATION PARAMETERS
 # 4. SIMULATION
 # 5. RESULTS
-# 5.1. TIME
-# 5.2. AVERAGE
-# 5.3. TIME DOMAIN PARAMETER
-# 5.4. FREQUENCY DOMAIN PARAMETER
-# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT
+# 5.1. TIME (Tables: 1,2,3,4,5)
+# 5.2. AVERAGE (Tables: 6,7,8,9,10)
+# 5.3. TIME DOMAIN PARAMETER d (Tables: 11,12,13,14,15)
+# 5.4. FREQUENCY DOMAIN PARAMETER (Tables: 16,17,18,19,20)
+# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT (Tables: 21,22,23,24,25)
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -58,7 +58,7 @@ names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/4. ",PROCESS,"/",SUBPROCESS,"/")
 
 ################################################################################
-# 5.1 Running time
+# 5.1. TIME (Tables: 1,2,3,4,5)
 ################################################################################
 
 # LOAD DATA LISTS
@@ -212,7 +212,7 @@ gt_tbl
 gtsave(gt_tbl, filename = "Table 5.png",path = path)
 
 ################################################################################
-# 5.2 Time series average (should be zero)
+# 5.2. AVERAGE (Tables: 6,7,8,9,10)
 ################################################################################
 
 # DATA LISTS
@@ -396,7 +396,7 @@ colnames(r_average_matrix) = paste0(POWER,"")
 
 
 ################################################################################
-# 5.3. MSE COEFFICIENTS for d
+# 5.3. TIME DOMAIN PARAMETER d (Tables: 11,12,13,14,15)
 ################################################################################
 
 # DATA
@@ -552,7 +552,7 @@ gt_tbl
 gtsave(gt_tbl, filename = "Table 15.png",path = path)
 
 ################################################################################
-# 5.4. MSE COEFFICIENTS for lambda=1
+# 5.4. FREQUENCY DOMAIN PARAMETER (Tables: 16,17,18,19,20)
 ################################################################################
 
 # DATA
@@ -708,7 +708,7 @@ gt_tbl
 gtsave(gt_tbl, filename = "Table 20.png",path = path)
 
 ################################################################################
-# 5.5. Correct p-values for EXP(1)
+# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT (Tables: 21,22,23,24,25)
 ################################################################################
 
 # DATA

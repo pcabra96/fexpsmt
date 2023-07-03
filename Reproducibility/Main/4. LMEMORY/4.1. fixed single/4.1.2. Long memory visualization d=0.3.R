@@ -10,11 +10,10 @@
 # 4. VISUALIZATION PATH
 # 5. VISUALIZATION
 # 5.1. TIME (Figures: 1,2)
-# 5.1. AVERAGE (Figures: 3,4)
-# 5.3. MSE COEFFICIENTS FOR AR COEFFICIENT (Figures: 5,6)
-# 5.4. MSE COEFFICIENTS FOR MA COEFFICIENT (Figures: 7,8)
-# 5.5. MSE COEFFICIENt FOR LAMBDA COEFFICIENT, FREQUENCY DOMAIN (Figures: 9,10)
-# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT, FREQUENCY DOMAIN (Figures: 11, 12)
+# 5.2. AVERAGE (Figures: 3,4)
+# 5.3. MSE FOR d COEFFICIENT (Figures: 5,6)
+# 5.4. MSE FOR LAMBDA COEFFICIENT, FREQUENCY DOMAIN (Figures: 9,10)
+# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT, FREQUENCY DOMAIN (Figures: 11, 12)
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -40,7 +39,7 @@ set.seed(0)
 
 PROCESS = "LMEMORY"
 SUBPROCESS = "fixed single"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/4. ",PROCESS,"/",SUBPROCESS,"/")
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/4. ",PROCESS,"/4.1. ",SUBPROCESS,"/")
 d_coef_vec = 0.3
 POWER = 7:14
 N_SIMULATIONS = 1000
@@ -90,7 +89,7 @@ top_line = 4
 right_line = 2
 
 ########################################################
-# 5.1. TIME
+# 5.1. TIME (Figures: 1,2)
 ########################################################
 
 # LOAD THE DATA
@@ -169,7 +168,7 @@ graph_name = "Figure 2.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = 1800, height = 1100, res=200)
 dev.off()
 ################################################################################
-# 5.2. Time Series average
+# 5.2. AVERAGE (Figures: 3,4)
 ################################################################################
 
 # LOAD THE DATA
@@ -292,7 +291,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.3. MSE COEFFICIENTS FOR d COEFFICIENT
+# 5.3. MSE FOR d COEFFICIENT (Figures: 5,6)
 ################################################################################
 
 # LOAD THE DATA
@@ -418,7 +417,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.4. MSE COEFFICIENTS FOR LAMBDA COEFFICIENT
+# 5.4. MSE FOR LAMBDA COEFFICIENT, FREQUENCY DOMAIN (Figures: 9,10)
 ################################################################################
 
 # LOAD THE DATA
@@ -442,7 +441,7 @@ t.test(own_lambda_farima[,8],r_lambda[,8])
 # PARAMETERS
 ylab = TeX("$\\hat{lambda}_{MLE}$")
 xlab = "T"
-main = paste0("Fitted $\\d$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+main = paste0("Fitted $\\lambda$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
 y_1 = own_lambda_farima
 y_2 = own_lambda_fexp
 y_3 = r_lambda
@@ -542,7 +541,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT (FREQUENCY DOMAIN)
+# 5.5. FREQUENCY DOMAIN GOODNESS OF FIT, FREQUENCY DOMAIN (Figures: 11, 12)
 ################################################################################
 
 # LOAD THE DATA
@@ -645,6 +644,6 @@ abline(h=abline_value, col = abline_col)
 mtext(TeX(main), side = 3, line = -2.5, outer = TRUE,cex=1.5, font = 2)
 
 # SAVE THE GRAPH
-graph_name = "Figure 8.png"
+graph_name = "Figure 10.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
 dev.off()

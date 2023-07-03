@@ -9,13 +9,13 @@
 # 3. SIMULATION PARAMETERS
 # 4. VISUALIZATION PATH
 # 5. VISUALIZATION
-# 5.1. TIME
-# 5.1. AVERAGE
-# 5.3. MSE COEFFICIENTS FOR AR COEFFICIENT (TIME DOMAIN)
-# 5.4. MSE COEFFICIENTS FOR MA COEFFICIENT (TIME DOMAIN)
-# 5.5. MSE COEFFICIENTS FOR d COEFFICIENT (TIME DOMAIN)
-# 5.6. MSE COEFFICIENt FOR LAMBDA COEFFICIENT (FREQUENCY DOMAIN)
-# 5.7. FREQUENCY DOMAIN GOODNESS OF FIT (FREQUENCY DOMAIN)
+# 5.1. TIME (Figures: 1,2)
+# 5.1. AVERAGE (Figures: 3,4)
+# 5.3. MSE FOR AR COEFFICIENT (Figures: 5,6)
+# 5.4. MSE FOR MA COEFFICIENT (Figures: 7,8)
+# 5.5. MSE FOR d COEFFICIENT (Figures: 8,10)
+# 5.6. MSE FOR LAMBDA COEFFICIENT (Figures: 11,12)
+# 5.7. FREQUENCY DOMAIN GOODNESS OF FIT (Figures: 13,14)
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -185,7 +185,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.2. Time Series average
+# 5.1. AVERAGE (Figures: 3,4)
 ################################################################################
 
 # LOAD THE DATA
@@ -292,7 +292,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.3. MSE COEFFICIENTS FOR AR COEFFICIENT
+# 5.3. MSE FOR AR COEFFICIENT (Figures: 5,6)
 ################################################################################
 
 # LOAD THE DATA
@@ -402,7 +402,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.4. MSE COEFFICIENTS FOR MA COEFFICIENT
+# 5.4. MSE FOR MA COEFFICIENT (Figures: 7,8)
 ################################################################################
 
 # LOAD THE DATA
@@ -509,7 +509,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.5. MSE COEFFICIENTS FOR d COEFFICIENT
+# 5.5. MSE FOR d COEFFICIENT (Figures: 8,10)
 ################################################################################
 
 # LOAD THE DATA
@@ -616,7 +616,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.5. MSE COEFFICIENTS FOR LAMBDA
+# 5.6. MSE FOR LAMBDA COEFFICIENT (Figures: 11,12)
 ################################################################################
 
 # LOAD THE DATA
@@ -633,7 +633,7 @@ t.test(fit_own_exp[,7],fit_r_exp[,7])
 t.test(fit_own_exp[,8],fit_r_exp[,8])
 
 #-------------------------------
-# 5.5.1. BOXPLOT
+# 5.6.1. BOXPLOT
 #-------------------------------
 
 # PARAMETERS
@@ -669,7 +669,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 #-------------------------------
-# 5.5.2. LINES
+# 5.6.2. LINES
 #-------------------------------
 
 # PARAMETERS
@@ -722,7 +722,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT (FREQUENCY DOMAIN)
+# 5.7. FREQUENCY DOMAIN GOODNESS OF FIT (Figures: 13,14)
 ################################################################################
 
 # LOAD THE DATA
@@ -739,7 +739,7 @@ t.test(p_val_own_exp[,7],p_val_r_exp[,7])
 t.test(p_val_own_exp[,8],p_val_r_exp[,8])
 
 #-------------------------------
-# 5.6.1. BOXPLOT
+# 5.7.1. BOXPLOT
 #-------------------------------
 
 # PARAMETERS
@@ -773,7 +773,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 #-------------------------------
-# 5.5.2. LINES
+# 5.7.2. LINES
 #-------------------------------
 
 # PARAMETERS

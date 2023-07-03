@@ -9,12 +9,12 @@
 # 3. SIMULATION PARAMETERS
 # 4. VISUALIZATION PATH
 # 5. VISUALIZATION
-# 5.1. TIME
-# 5.1. AVERAGE
-# 5.3. MSE COEFFICIENTS FOR AR COEFFICIENT (TIME DOMAIN)
-# 5.4. MSE COEFFICIENTS FOR MA COEFFICIENT (TIME DOMAIN)
-# 5.5. MSE COEFFICIENt FOR LAMBDA COEFFICIENT (FREQUENCY DOMAIN)
-# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT (FREQUENCY DOMAIN)
+# 5.1. TIME (Figures: 1,2)
+# 5.2. TIME SERIES AVERAGE (Figures: 3,4)
+# 5.3. MSE FOR AR COEFFICIENT (Figures: 5,6)
+# 5.4. MSE FOR MA COEFFICIENT (Figures: 7,8)
+# 5.5. MSE FOR LAMBDA COEFFICIENT (Figures: 9,10)
+# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT ((Figures: 11,12)
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -98,7 +98,7 @@ right_line = 2
 ################################################################################
 
 ################################################################################
-# 5.1. TIME
+# 5.1. TIME (Figures: 1,2)
 ################################################################################
 
 # LOAD THE DATA
@@ -183,7 +183,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.2. Time Series average
+# 5.2. TIME SERIES AVERAGE (Figures: 3,4)
 ################################################################################
 
 # LOAD THE DATA
@@ -290,7 +290,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.3. MSE COEFFICIENTS FOR AR COEFFICIENT
+# 5.3. MSE FOR AR COEFFICIENT (Figures: 5,6)
 ################################################################################
 
 # LOAD THE DATA
@@ -400,7 +400,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.4. MSE COEFFICIENTS FOR MA COEFFICIENT
+# 5.4. MSE FOR MA COEFFICIENT (Figures: 7,8)
 ################################################################################
 
 # LOAD THE DATA
@@ -507,7 +507,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.5. MSE COEFFICIENTS FOR MA COEFFICIENT
+# 5.5. MSE FOR LAMBDA COEFFICIENT (Figures: 9,10)
 ################################################################################
 
 # LOAD THE DATA
@@ -613,7 +613,7 @@ dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs
 dev.off()
 
 ################################################################################
-# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT (FREQUENCY DOMAIN)
+# 5.6. FREQUENCY DOMAIN GOODNESS OF FIT ((Figures: 11,12)
 ################################################################################
 
 # LOAD THE DATA

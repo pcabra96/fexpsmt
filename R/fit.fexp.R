@@ -11,8 +11,7 @@
 #' @examples fit.fexp(y, max.p = 1, max.d = 1)
 
 
-fit.fexp <- function(y, p = 0, d = 0){
-
+fit.fexp <- function(y, p = 0, d = 0, which_method = "Nelder-Mead"){
   n = length(y)
   # Fundamental frequencies
   mhalfm <- (n-1) %/% 2L
@@ -42,7 +41,7 @@ fit.fexp <- function(y, p = 0, d = 0){
   lower = c(rep(-Inf, p), 0)
   upper = c(rep(Inf, p), 0.55)
 
-  opt_res = optim(par = start_vals, fn = obj.Whittle, p = p, d_long = d_long, x = x, lower = lower, upper = upper, method = "L-BFGS-B")
+  opt_res = optim(par = start_vals, fn = obj.Whittle, p = p, d_long = d_long, x = x, lower = lower, upper = upper, method = which_method)
   # Print the optimized parameters
   if(p>0) {
     c_k_parameters = opt_res$par[1:p]

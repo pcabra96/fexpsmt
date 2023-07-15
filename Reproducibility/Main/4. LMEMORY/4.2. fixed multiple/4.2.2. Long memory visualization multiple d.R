@@ -21,8 +21,10 @@
 ##----------------------------------------------------------------------------##
 ################################################################################
 
+library(RColorBrewer)
 library(latex2exp)
 library(gt)
+library(gtExtras)
 library(magrittr)
 library(htmltools)
 library(ggplot2)
@@ -44,18 +46,13 @@ set.seed(0)
 ################################################################################
 
 PROCESS = "LMEMORY"
-SUBPROCESS = "multiple"
+SUBPROCESS = "fixed multiple"
+path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/4. ",PROCESS,"/4.2. ",SUBPROCESS,"/")
 symbol = "d"
 d_coef_vec = c(0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45)
 POWER = 7:14
 N_SIMULATIONS = 1000
 names=c(TeX("$2^7$"), TeX("$2^8$"), TeX("$2^9$"), TeX("$2^{10}$"), TeX("$2^{11}$"), TeX("$2^{12}$"), TeX("$2^{13}$"),TeX("$2^{14}$"))
-
-################################################################################
-# PATH TO LOAD THE DATA
-################################################################################
-
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/4. ",PROCESS,"/",SUBPROCESS,"/")
 
 ################################################################################
 # 5.1. TIME (Tables: 1,2,3,4,5)
@@ -158,8 +155,8 @@ main = paste0("fracdiff average running time (s) for ", N_SIMULATIONS, " {y<sub>
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- r_times_matrix |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 3.png",path = path)
@@ -180,6 +177,11 @@ colnames(r_times_matrix) = paste0(POWER,"")
 # 5.1.4. fracdiff farima vs fexpmst farima
 #-------------------------------------------------------------------------------
 
+pal <- function(x){
+  f_neg <- scales::col_numeric(palette = c(rev(c("white",brewer.pal(9, "OrRd")[1:3]))),domain = c(0,1))
+  f_pos <- scales::col_numeric(palette = c("white",brewer.pal(8, "Blues")[3:5]), domain = c(1, 17))
+  ifelse(x < 1, f_neg(x), f_pos(x))}
+
 process_string = ""
 equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
@@ -187,9 +189,10 @@ main = paste0("average running time (s): fracdiff<sub>FARIMA</sub>/fexpmst<sub>F
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (r_times_matrix/own_times_farima_matrix) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
-
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |>
+          fmt_number(columns = everything(), decimals = 5) |>
+          data_color(columns = everything(), colors = pal)
 gt_tbl
 
 gtsave(gt_tbl, filename = "Table 4.png",path = path)
@@ -205,8 +208,9 @@ main = paste0("average running time (s): fracdiff<sub>FARIMA</sub>/fexpmst<sub>F
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (r_times_matrix/own_times_fexp_matrix) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)|>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 5.png",path = path)
@@ -337,6 +341,11 @@ colnames(r_average_matrix) = paste0(POWER,"")
 # 5.2.4. fexmpst farima vs fracdiff farima
 #-------------------------------------------------------------------------------
 
+pal <- function(x){
+  f_neg <- scales::col_numeric(palette = c(rev(c("white",brewer.pal(8, "OrRd")[1:3]))),domain = c(-2,1))
+  f_pos <- scales::col_numeric(palette = c("white",brewer.pal(9, "Blues")[2:5]), domain = c(1, 9))
+  ifelse(x < 1, f_neg(x), f_pos(x))}
+
 process_string = ""
 equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
@@ -344,10 +353,12 @@ main = paste0("MSE(y&#x0304<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (abs(r_average_matrix)/abs(own_average_farima_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5) |>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
+
 gtsave(gt_tbl, filename = "Table 9.png",path = path)
 
 # AXIS NAMES FOR LATEX
@@ -369,15 +380,16 @@ comparison_matrix_2 = as.matrix(abs(own_average_fexp_matrix)<=abs(r_average_matr
 # 5.2.5. fexmpst farima vs fracdiff farima
 #-------------------------------------------------------------------------------
 
-process_string = "f"
+process_string = ""
 equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("MSE(y&#x0304<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub>)/MSE(y&#x0304<sub>fexpmst<sub><sub>FEXP(0,d)</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (abs(r_average_matrix)/abs(own_average_fexp_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)|>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 10.png",path = path)
@@ -393,7 +405,6 @@ print(r_average_matrix, include.rownames = TRUE, hline.after = c(-1,0, nrow(own_
 # Back to normal
 rownames(r_average_matrix) = paste0(d_coef_vec,"")
 colnames(r_average_matrix) = paste0(POWER,"")
-
 
 ################################################################################
 # 5.3. TIME DOMAIN PARAMETER d (Tables: 11,12,13,14,15)
@@ -484,7 +495,7 @@ rownames(own_long_param_fexp_matrix) = paste0(d_coef_vec,"")
 colnames(own_long_param_fexp_matrix) = paste0(POWER,"")
 
 #-------------------------------------------------------------------------------
-# 5.3.3. fexpmst fexpmst
+# 5.3.3. fexpmst fexpm
 #-------------------------------------------------------------------------------
 
 rownames(r_long_param_matrix) = paste0(d_coef_vec,"")
@@ -518,8 +529,13 @@ rownames(r_long_param_matrix) = paste0(d_coef_vec,"")
 colnames(r_long_param_matrix) = paste0(POWER,"")
 
 #-------------------------------------------------------------------------------
-# 5.2.4. fexmpst farima vs fracdiff farima
+# 5.3.4. fexmpst farima vs fracdiff farima
 #-------------------------------------------------------------------------------
+
+pal <- function(x){
+  f_neg <- scales::col_numeric(palette = c(rev(c("white",brewer.pal(10, "OrRd")[2:4]))),domain = c(0.85,1))
+  f_pos <- scales::col_numeric(palette = c("white",brewer.pal(10, "Blues")[2:4]), domain = c(1, 1.3))
+  ifelse(x < 1, f_neg(x), f_pos(x))}
 
 process_string = ""
 equation <- "T<br>t=1"
@@ -528,14 +544,15 @@ main = paste0("MSE(fitted d<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (abs(r_long_param_matrix)/abs(own_long_param_farima_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5) |>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 14.png",path = path)
 
 #-------------------------------------------------------------------------------
-# 5.2.5. fexmpst farima vs fracdiff farima
+# 5.3.5. fexmpst farima vs fracdiff farima
 #-------------------------------------------------------------------------------
 
 process_string = ""
@@ -545,8 +562,9 @@ main = paste0("MSE(fitted d<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (abs(r_long_param_matrix)/abs(own_long_param_fexp_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5) |>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 15.png",path = path)
@@ -606,7 +624,7 @@ rownames(own_lambda_farima_matrix) = paste0(d_coef_vec,"")
 colnames(own_lambda_farima_matrix) = paste0(POWER,"")
 
 #-------------------------------------------------------------------------------
-# 5.4.2. fexpmst farima
+# 5.4.2. fexpmst fexp
 #-------------------------------------------------------------------------------
 
 rownames(own_lambda_fexp_matrix) = paste0(d_coef_vec,"")
@@ -640,7 +658,7 @@ rownames(own_lambda_fexp_matrix) = paste0(d_coef_vec,"")
 colnames(own_lambda_fexp_matrix) = paste0(POWER,"")
 
 #-------------------------------------------------------------------------------
-# 5.4.3. fexpmst farima
+# 5.4.3. fracdiff farima
 #-------------------------------------------------------------------------------
 
 rownames(r_lambda_matrix) = paste0(d_coef_vec,"")
@@ -674,8 +692,13 @@ rownames(r_lambda_matrix) = paste0(d_coef_vec,"")
 colnames(r_lambda_matrix) = paste0(POWER,"")
 
 #-------------------------------------------------------------------------------
-# 5.2.4. fexmpst farima vs fracdiff farima
+# 5.4.4. fexmpst farima vs fracdiff farima
 #-------------------------------------------------------------------------------
+
+pal <- function(x){
+  f_neg <- scales::col_numeric(palette = c(rev(c("white",brewer.pal(5, "OrRd")[1:3]))),domain = c(0.7,1))
+  f_pos <- scales::col_numeric(palette = c("white",brewer.pal(3, "Blues")[1:3]), domain = c(1, 1.3))
+  ifelse(x < 1, f_neg(x), f_pos(x))}
 
 process_string = ""
 equation <- "T<br>t=1"
@@ -684,8 +707,9 @@ main = paste0("MSE(fitted &lambda;<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></su
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (abs(r_lambda_matrix)/abs(own_lambda_farima_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5) |>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 19.png",path = path)
@@ -697,12 +721,13 @@ gtsave(gt_tbl, filename = "Table 19.png",path = path)
 process_string = ""
 equation <- "T<br>t=1"
 equation_html <- paste0("<div class='equation'>", equation, "</div>")
-main = paste0("MSE(fitted d<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub>)/MSE(fitted d<sub>fexpmst<sub><sub>FEXP(0,d)</sub></sub></sub>)")
+main = paste0("MSE(fitted &lambda;<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub>)/MSE(fitted &lambda;<sub>fexpmst<sub><sub>FEXP(0,d)</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
 gt_tbl <- (abs(r_lambda_matrix)/abs(own_lambda_fexp_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)|>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 20.png",path = path)
@@ -830,8 +855,13 @@ rownames(r_exp_1_matrix) = paste0(d_coef_vec,"")
 colnames(r_exp_1_matrix) = paste0(POWER,"")
 
 #-------------------------------------------------------------------------------
-# 5.2.4. fexmpst farima vs fracdiff farima
+# 5.5.4. fexmpst farima vs fracdiff farima
 #-------------------------------------------------------------------------------
+
+pal <- function(x){
+  f_neg <- scales::col_numeric(palette = c(rev(c("white",brewer.pal(3, "OrRd")[1:3]))),domain = c(0, 0.8,1))
+  f_pos <- scales::col_numeric(palette = c("white",brewer.pal(3, "Blues")[1:3]), domain = c(1, 1.2))
+  ifelse(x < 1, f_neg(x), f_pos(x))}
 
 process_string = ""
 equation <- "T<br>t=1"
@@ -839,9 +869,10 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("(H<sub>0</sub>:<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub>)/(H<sub>0</sub>:<sub>fexpmst<sub><sub>FARIMA(0,d,0)</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- (abs(r_exp_1_matrix)/abs(own_exp_1_farima_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+gt_tbl <- (abs(r_exp_1_matrix)/abs(own_exp_1_farima_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_exp_1_matrix)) |>
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)|>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
 gtsave(gt_tbl, filename = "Table 24.png",path = path)
@@ -856,9 +887,13 @@ equation_html <- paste0("<div class='equation'>", equation, "</div>")
 main = paste0("(H<sub>0</sub>:<sub>fracdiff<sub><sub>FARIMA(0,d,0)</sub></sub></sub>)/(H<sub>0</sub>:<sub>fexpmst<sub><sub>FEXP(0,d)</sub></sub></sub>)")
 css <- ".equation {display: inline-block;vertical-align: middle;}"
 
-gt_tbl <- (abs(r_exp_1_matrix)/abs(own_exp_1_fexp_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_times_matrix)) |>
-  cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
-  tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)
+gt_tbl <- (abs(r_exp_1_matrix)/abs(own_exp_1_fexp_matrix)) |> gt(rowname_col = "d", rownames_to_stub = TRUE) |> tab_header(title =  html(main)) |> tab_spanner(label = "T", columns = colnames(r_exp_1_matrix)) |>
+          cols_label("7" = html("2<sup>7</sup>"),"8" = html("2<sup>8</sup>"),"9" = html("2<sup>9</sup>"),"10" = html("2<sup>10</sup>"),"11" = html("2<sup>11</sup>"),"12" = html("2<sup>12</sup>"),"13" = html("2<sup>13</sup>"),"14" = html("2<sup>14</sup>")) |>
+          tab_stubhead(label = "d")|> opt_css(css) |> fmt_number(columns = everything(), decimals = 5)|>
+          data_color(columns = everything(), colors = pal)
 
 gt_tbl
-gtsave(gt_tbl, filename = "Table 25.png",path = path)
+
+gtsave(gt_tbl, filename = "Table 25.png",path = path,expand = 30)
+
+

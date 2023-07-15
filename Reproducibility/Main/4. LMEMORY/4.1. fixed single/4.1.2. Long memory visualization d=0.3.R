@@ -314,7 +314,7 @@ t.test(own_long_param_farima[,8],r_long_param[,8])
 
 if (length(d_coef_vec)==1) {
   # PARAMETERS
-  ylab = TeX("$\\hat{d}_{MLE}$")
+  ylab = TeX("$\\hat{d}_{Whittle}$")
   xlab = "T"
   main = paste0("Fitted $\\d$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
   y_1 = own_long_param_farima
@@ -359,7 +359,7 @@ if (length(d_coef_vec)==1) {
 #-------------------------------
 
 # PARAMETERS
-ylab = TeX("$\\hat{d}_{MLE}$ MSE")
+ylab = TeX("$\\hat{d}_{Whittle}$ MSE")
 xlab = "T"
 main = paste0("MSE of $\\hat{d}$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
 true_param = d_coef_vec

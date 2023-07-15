@@ -6,23 +6,9 @@ sim.fexp <- function(ck, d = 0, T = 512){
   M = T*2
   frequency = c(0,pi)
   freq <- seq.int(frequency[1], frequency[2], length.out = M)
-
-  #spectral_ts = fexp.spectrum(ck = ck, d = 0, frequency = frequency, n.freq = M)
   spectral_ts = fexp.spectrum(ck = ck, d = d, frequency = frequency, n.freq = T+1)
 
-  # Include long memory component
-  #l.m <- sapply(freq, function(x) abs(2*sin(x*(1/2)))^(-2*d))
-  #spectral_ts = spectral_ts*l.m
-
-  # Approx f(0) when there is long memory component.
-'  if(d!=0){
-    freq_2 = seq(frequency[1],frequency[2],length.out = T+1)
-    lamda_aprox = (freq_2[2]-freq_2[1])/T
-    f_0 = farima.spectrum(ar = 0, ma = 0, n.freq = 1)
-    spectral_ts[1] = f_0*abs(lamda_aprox)^(-2*d)
-  }
-'
-  spectral_ts[1] = spectral_ts[2]*2
+  if(d!=0){spectral_ts[1] = spectral_ts[2]*2}
 
   # Assign values to parameters
   Ws = rnorm(M)

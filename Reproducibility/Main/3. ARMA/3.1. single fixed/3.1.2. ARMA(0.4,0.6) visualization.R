@@ -40,7 +40,7 @@ set.seed(0)
 
 # TO TOUCH
 PROCESS = "ARMA"
-SUB_PROCESS = "fixed"
+SUB_PROCESS = "single fixed"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/3. ",PROCESS,"/3.1. ",SUB_PROCESS,"/")
 ar_coef_vec = 0.4 #readRDS(file = paste0(path,"ar_coef_vec.RData"))
 ma_coef_vec = 0.6 #readRDS(file = paste0(path,"ma_coef_vec.RData"))
@@ -156,6 +156,7 @@ dev.off()
 ylab = "time (s)"
 xlab = "T"
 main = paste0("Average running time for $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+main = paste0("Average running time for $\\ \\{y^(1:",N_SIMULATIONS,")_{",process_string,"_t}\\}_{t=1}^{T}$")
 y_1 = colMeans(time_own)
 y_2 = colMeans(time_r)
 abline_value = 0

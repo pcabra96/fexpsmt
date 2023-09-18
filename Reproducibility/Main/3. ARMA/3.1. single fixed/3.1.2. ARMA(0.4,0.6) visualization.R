@@ -156,7 +156,7 @@ dev.off()
 ylab = "time (s)"
 xlab = "T"
 main = paste0("Average running time for $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
-main = paste0("Average running time for $\\ \\{y^(1:",N_SIMULATIONS,")_{",process_string,"_t}\\}_{t=1}^{T}$")
+main = paste0("Average running time for $\\ \\{y^{(1 : ",N_SIMULATIONS,")}_{",process_string,"_t}\\}_{t=1}^{T=[2^7,...,2^{14}]}$")
 y_1 = colMeans(time_own)
 y_2 = colMeans(time_r)
 abline_value = 0

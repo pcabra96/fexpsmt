@@ -24,13 +24,6 @@ sim.farima <- function(ar = 0, ma = 0, d = 0, T = 512){
   freq <- seq.int(frequency[1], frequency[2], length.out = M)
   spectral_ts = farima.spectrum(ar = ar_coef, ma = ma_coef, d = d, frequency = frequency, n.freq = T+1)
 
-  # Approx f(0) when there is long memory component.
-'  if(d!=0){
-    freq_2 = seq(frequency[1],frequency[2],length.out = T+1)
-    lamda_aprox = (freq_2[2]-freq_2[1])/T
-    f_0 = farima.spectrum(ar = 0, ma = 0, n.freq = 1)
-    spectral_ts[1] = f_0*abs(lamda_aprox)^(-2*d)
-  }'
   spectral_ts[1] = spectral_ts[2]*2
   Ws = rnorm(M)
   Ws = matrix(Ws, ncol = 2)

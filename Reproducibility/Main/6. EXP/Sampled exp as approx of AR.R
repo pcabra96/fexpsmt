@@ -25,7 +25,7 @@ num = 0.5
 results = replicate(big_order, matrix(0,nrow = big_order+1, ncol = big_order), simplify = FALSE)
 for (order in 2:big_order) {
   mat = matrix(0,nrow = big_order+1, ncol = big_order)
-  for (j in 1:1:(order+1)) {
+  for (j in 1:(order+1)) {
     a = runif(order,min = -num, max = num)
     for (po in 1:length(a)) {
       if (po==1) {

@@ -24,6 +24,7 @@
 ################################################################################
 
 library(latex2exp)
+library(knitr)
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -460,9 +461,9 @@ if (length(ma_coef_vec)==1) {
 #-------------------------------
 
 # PARAMETERS
-ylab = TeX("$\\hat{theta}_{1,\\ Whittle}$ $MSE")
+ylab = TeX("MSE")
 xlab = "T"
-main = paste0("MSE of $\\hat{theta}_1$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+main = paste0("$MSE(\boldmath{{\underline{\hat{\xi}}}}_{ \ Whittle},\boldmath{{\underline{\xi}}})$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
 true_param = ma_coef_vec
 own_param = fit_own_theta
 r_param = fit_r_theta
@@ -472,6 +473,7 @@ abline_col = "black"
 # MSE
 y_1 = colMeans((own_param - true_param)^2)
 y_2 = colMeans((r_param - true_param)^2)
+
 
 # STANDARD DEVIATION OF SQUARED ERROR
 sd_own <- apply(((own_param - true_param)^2), 2, sd)
@@ -508,9 +510,66 @@ graph_name = "Figure 8.png"
 dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
 dev.off()
 
+
+################################################################################
+# 5.4. MSE FOR XI
+################################################################################
+
+#-------------------------------
+# 5.4.2. LINES
+#-------------------------------
+
+# SAVE THE GRAPH
+graph_name = "Figure 15.pdf"
+pdf(file = paste0(path,graph_name), width = 8, height = 5) # The height of the plot in inches
+
+# PARAMETERS
+ylab = TeX("$MSE(\\textbf{{\\underline{\\hat{\\xi}}}}_{Whittle},\\textbf{{\\underline{\\xi}}})$")
+xlab = "T"
+main = ""
+abline_value = 0
+abline_col = "black"
+
+# MSE
+y_1 = colMeans((fit_own_phi-ar_coef_vec)^2+(fit_own_theta-ma_coef_vec)^2)
+y_2 = colMeans((fit_r_phi-ar_coef_vec)^2+(fit_r_theta-ma_coef_vec)^2)
+
+# STANDARD DEVIATION OF SQUARED ERROR
+sd_own <- apply((fit_own_phi-ar_coef_vec)^2+(fit_own_theta-ma_coef_vec)^2, 2, sd)
+sd_r <- apply((fit_r_phi-ar_coef_vec)^2+(fit_r_theta-ma_coef_vec)^2, 2, sd)
+
+# LIMITS
+lim_inf = min(y_1 - sd_own, y_2 - sd_r)
+lim_sup = max(y_1 + sd_own, y_2 + sd_r)
+
+# DISPLAY
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,1,right_line))
+
+# PLOT
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+lines(x = POWER, y = y_2, col = "red", type = "o")
+axis(1, at=POWER, labels = names)
+axis(2)
+legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
+abline(h=abline_value, col = abline_col)
+mtext(TeX(main), side = 3, line = -4, outer = TRUE, cex=tite_size, font = 2)
+
+# PLOT STANDARD DEVIATION
+for (i in 1:length(POWER)) {
+  segments(x0 = POWER[i], y0 = y_1[i] - sd_own[i], x1 = POWER[i], y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] - sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] - sd_own[i], col = "blue")
+  segments(x0 = POWER[i] - 0.1, y0 = y_1[i] + sd_own[i], x1 = POWER[i] + 0.1, y1 = y_1[i] + sd_own[i], col = "blue")
+  segments(x0 = POWER[i], y0 = y_2[i] - sd_r[i], x1 = POWER[i], y1 = y_2[i] + sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] - sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] - sd_r[i], col = "red")
+  segments(x0 = POWER[i] - 0.1, y0 = y_2[i] + sd_r[i], x1 = POWER[i] + 0.1, y1 = y_2[i] + sd_r[i], col = "red")
+}
+
+dev.off()
+
 ################################################################################
 # 5.5. MSE FOR d COEFFICIENT (Figures: 8,10)
 ################################################################################
+
 
 # LOAD THE DATA
 d_own = readRDS(file = paste0(path,"d_own.RData"))
@@ -566,10 +625,13 @@ if (length(d_coef_vec)==1) {
 # 5.4.2. LINES
 #-------------------------------
 
+graph_name = "Figure 10.pdf"
+pdf(file = paste0(path,graph_name), width = 8, height = 5) # The height of the plot in inches
+
 # PARAMETERS
-ylab = TeX("$\\hat{d}_{\\ Whittle}$ $MSE")
+ylab = TeX("$MSE(\\hat{d}_{Whittle},d)$")
 xlab = "T"
-main = paste0("MSE of $\\hat{d}$ with $\\",N_SIMULATIONS," \\ \\{y_{",process_string,"_t}\\}_{t=1}^{T}$")
+main = ""
 true_param = d_coef_vec
 own_param = d_own
 r_param = d_r
@@ -589,7 +651,7 @@ lim_inf = min(y_1 - sd_own, y_2 - sd_r)
 lim_sup = max(y_1 + sd_own, y_2 + sd_r)
 
 # DISPLAY
-par(mfrow = c(1, 1), mar=c(bottom_line,left_line,top_line,right_line))
+par(mfrow = c(1, 1), mar=c(bottom_line,left_line,1,right_line))
 
 # PLOT
 plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
@@ -598,7 +660,7 @@ axis(1, at=POWER, labels = names)
 axis(2)
 legend(11,(lim_sup), legend = legend, col = c("blue", "red"), lty = 1, cex = legend_size,lwd=legend_line_style,seg.len=legend_line, bty="n",)
 abline(h=abline_value, col = abline_col)
-mtext(TeX(main), side = 3, line = -3.5, outer = TRUE, cex=tite_size, font = 2)
+mtext(TeX(main), side = 3, outer = TRUE, cex=tite_size, font = 2)
 
 # PLOT STANDARD DEVIATION
 for (i in 1:length(POWER)) {
@@ -611,8 +673,6 @@ for (i in 1:length(POWER)) {
 }
 
 # SAVE THE GRAPH
-graph_name = "Figure 10.png"
-dev.print(device = png, filename = paste0(path,graph_name), width = width_graphs, height = height_graphs)
 dev.off()
 
 ################################################################################

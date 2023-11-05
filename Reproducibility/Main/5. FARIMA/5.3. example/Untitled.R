@@ -19,6 +19,10 @@ set.seed(0)
 PROCESS = "FARIMA"
 SUBPROCESS = "example"
 path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/5. ",PROCESS,"/5.3. ",SUBPROCESS,"/")
+
+active_path = dirname(rstudioapi::getActiveDocumentContext()$path)
+path = paste0(active_path,"/")
+
 POWER = 13
 ar_coef_vec = 0.7
 ma_coef_vec = 0.4
@@ -87,8 +91,8 @@ graph_name = "Figure 1.pdf"
 pdf(file = paste0(path,graph_name), width = 8, height = 5) # The height of the plot in inches
 
 par(mfrow=c(2,1), mar=c(5,5,1,1))
-plot(y_own[1:512], type = "l", ylab = TeX("$y_{fexpmst}$"), xlab = "T", main = "", cex.lab = lab_size, cex.axis = axis_text)
-plot(y_r[1:512], type = "l", ylab = TeX("$y_{fracdiff}$"), xlab = "T", cex.lab = lab_size, cex.axis = axis_text)
+plot(y_own, type = "l", ylab = TeX("$y_{fexpmst}$"), xlab = "T", main = "", cex.lab = lab_size, cex.axis = axis_text)
+plot(y_r, type = "l", ylab = TeX("$y_{fracdiff}$"), xlab = "T", cex.lab = lab_size, cex.axis = axis_text)
 
 dev.off()
 
@@ -134,17 +138,15 @@ yper_r = per_r[2: ((n+1) %/% 2)]
 I_r = yper_r/true_spectrum[1:(T/2-1)]
 
 
-
-
 graph_name = "Figure 2.pdf"
 pdf(file = paste0(path,graph_name), width = 8, height = 5) # The height of the plot in inches
 
 par(mfrow=c(2,1), mar=c(5,5,1,1))
-plot(x = w, y = yper_own, type = "l", col = "black", ylim=c(0,25), ylab = TeX("$I_{fexpmst}$"), xlab = TeX("$\\omega$"), cex.lab = lab_size, cex.axis = axis_text)
+plot(x = w, y = yper_own, type = "l", col = "black", ylim=c(0,max(yper_own,yper_r)), ylab = TeX("$I_{fexpmst}$"), xlab = TeX("$\\omega$"), cex.lab = lab_size, cex.axis = axis_text)
 lines(x = w, y = true_spectrum[1:(T/2-1)], type = "l", col = "red")
 legend("topright",legend = c("periodogram from fexpmst simulation", "true value"), col = c("black", "red"), lty = 1, cex = 1)
 
-plot(x = w, y = yper_r, type = "l", col = "black", ylim=c(0,25), ylab = TeX("$I_{fracdiff}$"), xlab = TeX("$\\omega$"), cex.lab = lab_size, cex.axis = axis_text)
+plot(x = w, y = yper_r, type = "l", col = "black", ylim=c(0,max(yper_own,yper_r)), ylab = TeX("$I_{fracdiff}$"), xlab = TeX("$\\omega$"), cex.lab = lab_size, cex.axis = axis_text)
 lines(x = w, y = true_spectrum[1:(T/2-1)], type = "l", col = "red")
 legend("topright",legend = c("periodogram from fraciff simulation", "true value"), col = c("black", "red"), lty = 1, cex = 1)
 
@@ -154,11 +156,11 @@ graph_name = "Figure 3.pdf"
 pdf(file = paste0(path,graph_name), width = 8, height = 5) # The height of the plot in inches
 
 par(mfrow=c(2,1), mar=c(5,5,1,1))
-hist(I_own, xlab = TeX("$I^*_{fexpmst}(\\omega_j)"), main = "", probability = TRUE, breaks = 25, xlim= c(0,10), cex.lab = lab_size, cex.axis = axis_text)
+hist(I_own, xlab = TeX("$I^*_{fexpmst}(\\omega_j)"), main = "", probability = TRUE, breaks = 25, xlim= c(0,max(I_r,I_own)), cex.lab = lab_size, cex.axis = axis_text)
 curve(dexp(x, rate = 1), add = TRUE, col = "red", lwd = 2)
 legend("topright",legend = c(TeX("$EXP(\\lambda=1)$")), col = "red", lty = 1, cex = 1)
 
-hist(I_r, xlab = TeX("$I^*_{fracdiff}(\\omega_j)"), main = "", probability = TRUE, breaks = 25, xlim= c(0,10), cex.lab = lab_size, cex.axis = axis_text)
+hist(I_r, xlab = TeX("$I^*_{fracdiff}(\\omega_j)"), main = "", probability = TRUE, breaks = 25, xlim= c(0,max(I_r,I_own)), cex.lab = lab_size, cex.axis = axis_text)
 curve(dexp(x, rate = 1), add = TRUE, col = "red", lwd = 2)
 legend("topright",legend = c(TeX("$EXP(\\lambda=1)$")), col = "red", lty = 1, cex = 1)
 

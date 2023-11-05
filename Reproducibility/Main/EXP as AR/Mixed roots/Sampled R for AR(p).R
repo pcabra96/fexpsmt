@@ -97,7 +97,7 @@ for (ttt in 1:length(max_vec)) {
   pdf(file = paste0(this_path,graph_name), width = 8, height = 5) # The height of the plot in inches
   max_num = max(diff_matrix)
   par(mfrow=c(1,1), mar=c(bottom_line, left_line, top_line,right_line))
-  main = TeX(paste0("AR(",order,") with sampled ",min," < $x_i$ <",max))
+  main = TeX(paste0("AR(",order,") with sampled ",min," < $b_i$ <",max))
   matplot(x = 1:10, y = t(diff_matrix[,1:10]), main =main, ylim=c(0,max_num),
           type = "l", ylab = TeX(paste0("$\\int_{0}^{\\pi}|f_{AR(",order,")}(\\omega)-f_{EXP(p)}(\\omega)|d\\omega$")),
           xlab = "p", cex.lab = lab_size, cex.axis = axis_text)

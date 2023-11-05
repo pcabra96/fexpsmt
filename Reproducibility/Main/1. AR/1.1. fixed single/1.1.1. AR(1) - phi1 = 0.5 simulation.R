@@ -32,7 +32,8 @@ PROCESS = "AR"
 SUBPROCESS = "fixed multiple"
 coef = 0.5
 POWER = 7:14
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/1. ",PROCESS,"/1.2. ",SUBPROCESS,"/")
+active_path = dirname(rstudioapi::getActiveDocumentContext()$path)
+path = paste0(active_path,"/")
 
 ################################################################################
 ##----------------------------------------------------------------------------##

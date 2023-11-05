@@ -59,8 +59,8 @@ true_lab = 1.5
 bottom_line = 5
 left_line = 7
 top_line = 1
-right_line = 7.5
-inset_num = -0.25
+right_line = 8
+inset_num = -0.275
 
 d_coef_vec = c(0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45)
 

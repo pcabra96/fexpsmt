@@ -114,7 +114,7 @@ lim_sup = max(y_1,y_2)
 par(mfrow = c(1, 1), mar=c(bottom_line, left_line, top_line, right_line), xpd = TRUE)
 
 # PLOT
-plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
+plot(x = POWER, y = y_1, col = "blue", type = "o", ylim=c(lim_inf,lim_sup+0.2), ylab = ylab, labels = FALSE, xlab = xlab, cex.lab = lab_size, cex.axis = axis_text)
 lines(x = POWER, y = y_2, col = "red", type = "o")
 axis(1, at=POWER, labels = names)
 axis(2)

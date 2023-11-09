@@ -26,6 +26,11 @@ library(fracdiff)
 library(forecast)
 library(MASS)
 
+library(devtools)
+devtools::install_github("pcabra96/fexpsmt", force = TRUE)
+library(fexpsmt)
+library(fitdistrplus)
+
 ################################################################################
 ##----------------------------------------------------------------------------##
 ## 2. SEED                                                                    ##
@@ -42,7 +47,8 @@ set.seed(0)
 
 PROCESS = "FARIMA"
 SUBPROCESS = "sampled"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/5. ",PROCESS,"/5.2. ",SUBPROCESS,"/")
+active_path = dirname(rstudioapi::getActiveDocumentContext()$path)
+path = paste0(active_path,"/")
 POWER = 7:14
 N_SIMULATIONS = 1000
 ar_coef_vec = runif(N_SIMULATIONS, min = -0.9, max = 0.9)
@@ -99,7 +105,6 @@ start = Sys.time()
 for (sim in 1:N_SIMULATIONS) {
   for (j in 1:length(POWER)) {
     T = 2^(POWER[j])
-
     ar_coef = ar_coef_vec[sim]
     ma_coef = ma_coef_vec[sim]
     d_coef = d_coef_vec[sim]

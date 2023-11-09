@@ -16,6 +16,12 @@ library(reshape2)
 library(cowplot)
 library(ggnewscale)
 
+library(devtools)
+devtools::install_github("pcabra96/fexpsmt", force = TRUE)
+library(fexpsmt)
+
+
+
 ################################################################################
 # PARAMETERS
 ################################################################################

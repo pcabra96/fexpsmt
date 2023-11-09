@@ -25,6 +25,9 @@
 library(fracdiff)
 library(latex2exp)
 library(MASS)
+library(devtools)
+devtools::install_github("pcabra96/fexpsmt", force = TRUE)
+library(fexpsmt)
 
 ################################################################################
 ##----------------------------------------------------------------------------##
@@ -42,7 +45,8 @@ set.seed(0)
 
 PROCESS = "EXP"
 SUBPROCESS = "sampled"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/6. ",PROCESS,"/6.3. ",SUBPROCESS,"/")
+active_path = dirname(rstudioapi::getActiveDocumentContext()$path)
+path = paste0(active_path,"/")
 POWER = 7:14
 N_SIM = 1000
 K = 4

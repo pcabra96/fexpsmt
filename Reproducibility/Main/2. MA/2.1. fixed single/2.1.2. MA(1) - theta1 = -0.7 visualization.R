@@ -40,7 +40,8 @@ set.seed(0)
 # TO TOUCH
 PROCESS = "MA"
 SUB_PROCESS = "fixed single"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/2. ",PROCESS,"/2.1. ",SUB_PROCESS,"/")
+active_path = dirname(rstudioapi::getActiveDocumentContext()$path)
+path = paste0(active_path,"/")
 ma_coef_vec = -0.7 #readRDS(file = paste0(path,"ar_coef_vec.RData"))
 
 # DO NOT TOUCH

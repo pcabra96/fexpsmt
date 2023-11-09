@@ -45,7 +45,8 @@ set.seed(0)
 # TO TOUCH
 PROCESS = "MA"
 SUBPROCESS = "fixed multiple"
-path = paste0("~/Documents/2. UNIGE/2023-1 Master Thesis/fexpsmt/Reproducibility/Main/2. ",PROCESS,"/2.2. ",SUBPROCESS,"/")
+active_path = dirname(rstudioapi::getActiveDocumentContext()$path)
+path = paste0(active_path,"/")
 ma_coef_vec = c(-0.9,-0.7,-0.5,-0.3,-0.1,0.1,0.3,0.5,0.7,0.9)
 
 # DO NOT TOUCH

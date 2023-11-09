@@ -16,6 +16,10 @@
 library(latex2exp)
 library(knitr)
 
+library(devtools)
+devtools::install_github("pcabra96/fexpsmt", force = TRUE)
+library(fexpsmt)
+
 ################################################################################
 ##----------------------------------------------------------------------------##
 ## 2. SEED                                                                    ##

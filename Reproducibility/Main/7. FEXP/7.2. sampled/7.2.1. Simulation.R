@@ -25,6 +25,11 @@ library(fracdiff)
 library(latex2exp)
 library(MASS)
 
+library(devtools)
+#devtools::install_github("pcabra96/fexpsmt", force = TRUE)
+library(fexpsmt)
+library(fitdistrplus)
+
 ################################################################################
 ##----------------------------------------------------------------------------##
 ## 2. SEED                                                                    ##
